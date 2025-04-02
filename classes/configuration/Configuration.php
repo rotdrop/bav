@@ -44,7 +44,7 @@ class Configuration
      *
      * Set to null if you don't want to use an update plan.
      */
-    public function setUpdatePlan(UpdatePlan $updatePlan = null)
+    public function setUpdatePlan(?UpdatePlan $updatePlan = null)
     {
         $this->updatePlan = $updatePlan;
     }
@@ -100,7 +100,7 @@ class Configuration
     {
         return $this->backendContainer;
     }
-    
+
     /**
      * Sets the encoding.
      */
