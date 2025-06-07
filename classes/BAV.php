@@ -29,7 +29,7 @@ class BAV
      * @var DataBackend
      */
     private $backend;
-    
+
     /**
      * @var ContextValidation
      */
@@ -43,7 +43,7 @@ class BAV
      *
      * @see ConfigurationRegistry
      */
-    public function __construct(Configuration $configuration = null)
+    public function __construct(?Configuration $configuration = null)
     {
         if (is_null($configuration)) {
             $configuration = ConfigurationRegistry::getConfiguration();
@@ -52,7 +52,7 @@ class BAV
         $this->configuration = $configuration;
 
         $this->backend = $configuration->getDataBackendContainer()->getDataBackend();
-        
+
         $this->contextValidation = new ContextValidation($this->backend);
     }
 
@@ -133,7 +133,7 @@ class BAV
     {
         return $this->contextValidation->isValidBank($bankID);
     }
-    
+
     /**
      * Every bank has one main agency.
      *
@@ -165,7 +165,7 @@ class BAV
     {
         return $this->getBank($bankID)->getAgencies();
     }
-    
+
     /**
      * With this method you get the Bank objects for certain IDs. Note
      * that a call to this method with an identical id will return the same
@@ -203,7 +203,7 @@ class BAV
     {
         return $this->backend->isValidBIC(BICUtil::normalize($bic));
     }
-    
+
     /**
      * Returns the third call back parameter for filter_var() for validating
      * a bank.
@@ -218,7 +218,7 @@ class BAV
     {
         return $this->contextValidation->getValidBankFilterCallback();
     }
-    
+
     /**
      * Returns the third call back parameter for filter_var() for validating
      * a bank account.
