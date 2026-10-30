@@ -1,11 +1,11 @@
 <?php
 
-namespace malkusch\bav\Configuration;
+namespace rotdrop\bav\Configuration;
 
-use malkusch\bav\DataBackend\File\FileDataBackendContainer;
-use malkusch\bav\DataBackend\Update\LogUpdatePlan;
-use malkusch\bav\Encoding\Encoding;
-use malkusch\bav\Encoding\Exception\UnsupportedEncodingException;
+use rotdrop\bav\DataBackend\File\FileDataBackendContainer;
+use rotdrop\bav\DataBackend\Update\LogUpdatePlan;
+use rotdrop\bav\Encoding\Encoding;
+use rotdrop\bav\Encoding\Exception\UnsupportedEncodingException;
 
 /**
  * Default configuration uses {@link FileDataBackendContainer}

@@ -1,10 +1,10 @@
 <?php
 
-namespace malkusch\bav\Validator;
+namespace rotdrop\bav\Validator;
 
-use malkusch\bav\Bank\Bank;
-use malkusch\bav\Validator\Exception\ValidatorESERException;
-use malkusch\bav\Validator\Exception\ValidatorOutOfBoundsException;
+use rotdrop\bav\Bank\Bank;
+use rotdrop\bav\Validator\Exception\ValidatorESERException;
+use rotdrop\bav\Validator\Exception\ValidatorOutOfBoundsException;
 
 /**
  * Copyright (C) 2006  Markus Malkusch <markus@malkusch.de>

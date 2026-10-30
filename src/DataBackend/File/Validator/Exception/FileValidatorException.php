@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav\DataBackend\File\Validator\Exception;
+namespace rotdrop\bav\DataBackend\File\Validator\Exception;
 
-use malkusch\bav\DataBackend\Exception\DataBackendException;
+use rotdrop\bav\DataBackend\Exception\DataBackendException;
 
 /**
  * Validation exception.

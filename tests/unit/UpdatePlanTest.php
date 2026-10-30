@@ -1,13 +1,13 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\DataBackend\DataBackend;
-use malkusch\bav\DataBackend\File\FileDataBackend;
-use malkusch\bav\DataBackend\Update\AutomaticUpdatePlan;
-use malkusch\bav\DataBackend\Update\LogUpdatePlan;
-use malkusch\bav\DataBackend\Update\UpdatePlan;
-use malkusch\bav\Util\FileUtil;
+use rotdrop\bav\DataBackend\DataBackend;
+use rotdrop\bav\DataBackend\File\FileDataBackend;
+use rotdrop\bav\DataBackend\Update\AutomaticUpdatePlan;
+use rotdrop\bav\DataBackend\Update\LogUpdatePlan;
+use rotdrop\bav\DataBackend\Update\UpdatePlan;
+use rotdrop\bav\Util\FileUtil;
 
 require_once __DIR__ . "/../bootstrap.php";
 

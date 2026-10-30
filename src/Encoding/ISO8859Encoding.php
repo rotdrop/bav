@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav\Encoding;
+namespace rotdrop\bav\Encoding;
 
-use malkusch\bav\Encoding\Exception\EncodingException;
+use rotdrop\bav\Encoding\Exception\EncodingException;
 
 /**
  * This wrapper supports PHP's built-in functions for the ISO-8859-* encodings.

@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav\DataBackend\File\Download\Uripicker;
+namespace rotdrop\bav\DataBackend\File\Download\Uripicker;
 
-use malkusch\bav\DataBackend\File\Download\Uripicker\Exception\URIPickerException;
+use rotdrop\bav\DataBackend\File\Download\Uripicker\Exception\URIPickerException;
 
 /**
  * Finds the download URI in the Bundesbank HTML page with any URI picker.

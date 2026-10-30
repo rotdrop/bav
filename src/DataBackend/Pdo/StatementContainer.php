@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bav\DataBackend\Pdo;
+namespace rotdrop\bav\DataBackend\Pdo;
 
 /**
  * Stores prepared statements for reuse.

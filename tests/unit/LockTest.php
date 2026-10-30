@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Util\Lock;
+use rotdrop\bav\Util\Lock;
 
 require_once __DIR__ . "/../bootstrap.php";
 

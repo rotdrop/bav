@@ -27,12 +27,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "malkusch\\bav\\": "src/"
+            "rotdrop\\bav\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "malkusch\\bav\\": "tests/classes/"
+            "rotdrop\\bav\\": "tests/classes/"
         }
     },
     "require": {

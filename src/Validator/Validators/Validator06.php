@@ -1,9 +1,9 @@
 <?php
 
-namespace malkusch\bav\Validator\Validators;
+namespace rotdrop\bav\Validator\Validators;
 
-use malkusch\bav\Bank\Bank;
-use malkusch\bav\Validator\WeightedIterationValidator;
+use rotdrop\bav\Bank\Bank;
+use rotdrop\bav\Validator\WeightedIterationValidator;
 
 /**
  * Implements 06

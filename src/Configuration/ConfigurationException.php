@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav\Configuration;
+namespace rotdrop\bav\Configuration;
 
-use malkusch\bav\Exception\BAVException;
+use rotdrop\bav\Exception\BAVException;
 
 /**
  * Configuration exception

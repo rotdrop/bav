@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\DataBackend\File\Validator\FileValidator;
+use rotdrop\bav\DataBackend\File\Validator\FileValidator;
 
 require_once __DIR__ . "/../bootstrap.php";
 
@@ -44,7 +44,7 @@ class FileValidatorTest extends \PHPUnit\Framework\TestCase
 
     public function testInvalidFileSize()
     {
-        $this->expectException(\malkusch\bav\DataBackend\File\Validator\Exception\InvalidFilesizeException::class);
+        $this->expectException(\rotdrop\bav\DataBackend\File\Validator\Exception\InvalidFilesizeException::class);
 
         $validator = new FileValidator();
         $validator->validate(__FILE__);
@@ -52,7 +52,7 @@ class FileValidatorTest extends \PHPUnit\Framework\TestCase
 
     public function testInvalidLineLength()
     {
-        $this->expectException(\malkusch\bav\DataBackend\File\Validator\Exception\InvalidLineLengthException::class);
+        $this->expectException(\rotdrop\bav\DataBackend\File\Validator\Exception\InvalidLineLengthException::class);
 
         $invalidFile = $this->invalidFile;
         copy($this->file, $invalidFile);
@@ -67,7 +67,7 @@ class FileValidatorTest extends \PHPUnit\Framework\TestCase
 
     public function testNotConstantLineLength()
     {
-        $this->expectException(\malkusch\bav\DataBackend\File\Validator\Exception\InvalidLineLengthException::class);
+        $this->expectException(\rotdrop\bav\DataBackend\File\Validator\Exception\InvalidLineLengthException::class);
 
         $invalidFile = $this->invalidFile;
         copy($this->file, $invalidFile);
@@ -82,7 +82,7 @@ class FileValidatorTest extends \PHPUnit\Framework\TestCase
 
     public function testInvalidFirstLineContent()
     {
-        $this->expectException(\malkusch\bav\DataBackend\File\Validator\Exception\FieldException::class);
+        $this->expectException(\rotdrop\bav\DataBackend\File\Validator\Exception\FieldException::class);
 
         $invalidFile = $this->invalidFile;
         copy($this->file, $invalidFile);

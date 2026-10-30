@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Validator\Validators\Validator66;
+use rotdrop\bav\Validator\Validators\Validator66;
 
 require_once __DIR__ . "/../bootstrap.php";
 
@@ -27,8 +27,8 @@ class Validator66_PR18_Test extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider("provideTestRemainer0and1")]
     public function testRemainer0and1($account, $expected)
     {
-        $backend = $this->createStub(\malkusch\bav\DataBackend\DataBackend::class);
-        $bank = new \malkusch\bav\Bank\Bank($backend, 1, 66);
+        $backend = $this->createStub(\rotdrop\bav\DataBackend\DataBackend::class);
+        $bank = new \rotdrop\bav\Bank\Bank($backend, 1, 66);
         
         $validator = new Validator66($bank);
         $this->assertEquals($expected, $validator->isValid($account));

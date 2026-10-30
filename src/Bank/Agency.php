@@ -1,9 +1,9 @@
 <?php
 
-namespace malkusch\bav\Bank;
+namespace rotdrop\bav\Bank;
 
-use malkusch\bav\BAV;
-use malkusch\bav\Bank\Exception\UndefinedAttributeAgencyException;
+use rotdrop\bav\BAV;
+use rotdrop\bav\Bank\Exception\UndefinedAttributeAgencyException;
 
 /**
  * The bank agency.

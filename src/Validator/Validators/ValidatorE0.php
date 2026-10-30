@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bav\Validator\Validators;
+namespace rotdrop\bav\Validator\Validators;
 
 /**
  * Implements E0

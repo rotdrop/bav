@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Bank\Bank;
+use rotdrop\bav\Bank\Bank;
 
 /**
  * The API for Michael Plugge's kontocheck.

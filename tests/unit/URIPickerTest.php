@@ -1,11 +1,11 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\DataBackend\File\Download\Uripicker\DOMURIPicker;
-use malkusch\bav\DataBackend\File\Download\Uripicker\FallbackURIPicker;
-use malkusch\bav\DataBackend\File\Download\Uripicker\RegExpURIPicker;
-use malkusch\bav\DataBackend\File\Download\Uripicker\URIPicker;
+use rotdrop\bav\DataBackend\File\Download\Uripicker\DOMURIPicker;
+use rotdrop\bav\DataBackend\File\Download\Uripicker\FallbackURIPicker;
+use rotdrop\bav\DataBackend\File\Download\Uripicker\RegExpURIPicker;
+use rotdrop\bav\DataBackend\File\Download\Uripicker\URIPicker;
 
 require_once __DIR__ . "/../bootstrap.php";
 
@@ -78,7 +78,7 @@ class URIPickerTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider("provideURIPicker")]
     public function testFailPickURI(URIPicker $picker)
     {
-        $this->expectException(\malkusch\bav\DataBackend\File\Download\Uripicker\Exception\URIPickerException::class);
+        $this->expectException(\rotdrop\bav\DataBackend\File\Download\Uripicker\Exception\URIPickerException::class);
 
         $html = "XXX";
         $uri = $picker->pickURI($html);

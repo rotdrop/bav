@@ -1,11 +1,11 @@
 <?php
 
-namespace malkusch\bav\Configuration;
+namespace rotdrop\bav\Configuration;
 
-use malkusch\bav\DataBackend\DataBackend;
-use malkusch\bav\DataBackend\DataBackendContainer;
-use malkusch\bav\DataBackend\Update\UpdatePlan;
-use malkusch\bav\Encoding\Encoding;
+use rotdrop\bav\DataBackend\DataBackend;
+use rotdrop\bav\DataBackend\DataBackendContainer;
+use rotdrop\bav\DataBackend\Update\UpdatePlan;
+use rotdrop\bav\Encoding\Encoding;
 
 /**
  * Configuration

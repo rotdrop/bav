@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bav\Configuration;
+namespace rotdrop\bav\Configuration;
 
 /**
  * Registry for the configuration
@@ -14,10 +14,10 @@ namespace malkusch\bav\Configuration;
  * <code>
  * <?php
  *
- * namespace malkusch\bav\Configuration;
+ * namespace rotdrop\bav\Configuration;
  *
- * use malkusch\bav\DataBackend\Pdo\PDODataBackendContainer;
- * use malkusch\bav\DataBackend\Update\AutomaticUpdatePlan;
+ * use rotdrop\bav\DataBackend\Pdo\PDODataBackendContainer;
+ * use rotdrop\bav\DataBackend\Update\AutomaticUpdatePlan;
  *
  * $configuration = new DefaultConfiguration();
  *

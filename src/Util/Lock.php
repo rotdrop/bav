@@ -1,9 +1,9 @@
 <?php
 
-namespace malkusch\bav\Util;
+namespace rotdrop\bav\Util;
 
-use malkusch\bav\DataBackend\DataBackend;
-use malkusch\bav\Util\Exception\LockException;
+use rotdrop\bav\DataBackend\DataBackend;
+use rotdrop\bav\Util\Exception\LockException;
 
 /**
  * Helper for locking

@@ -1,10 +1,10 @@
 <?php
 
-namespace malkusch\bav\Validator\Validators;
+namespace rotdrop\bav\Validator\Validators;
 
-use malkusch\bav\Bank\Bank;
-use malkusch\bav\Validator\Validator;
-use malkusch\bav\Validator\ValidatorBankDependent;
+use rotdrop\bav\Bank\Bank;
+use rotdrop\bav\Validator\Validator;
+use rotdrop\bav\Validator\ValidatorBankDependent;
 
 /**
  * Copyright (C) 2006  Markus Malkusch <markus@malkusch.de>

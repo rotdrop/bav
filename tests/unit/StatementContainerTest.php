@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\DataBackend\Pdo\StatementContainer;
+use rotdrop\bav\DataBackend\Pdo\StatementContainer;
 
 require_once __DIR__ . "/../bootstrap.php";
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace malkusch\bav\Util;
+namespace rotdrop\bav\Util;
 
-use malkusch\bav\Configuration\Configuration;
-use malkusch\bav\Configuration\ConfigurationRegistry;
-use malkusch\bav\Util\Exception\FileException;
-use malkusch\bav\Util\Exception\NoTempDirectoryException;
+use rotdrop\bav\Configuration\Configuration;
+use rotdrop\bav\Configuration\ConfigurationRegistry;
+use rotdrop\bav\Util\Exception\FileException;
+use rotdrop\bav\Util\Exception\NoTempDirectoryException;
 
 /**
  * Helper for file system operations.

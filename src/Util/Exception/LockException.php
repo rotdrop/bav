@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav\Util\Exception;
+namespace rotdrop\bav\Util\Exception;
 
-use malkusch\bav\Exception\BAVException;
+use rotdrop\bav\Exception\BAVException;
 
 /**
  * Exception during locking.

@@ -1,9 +1,9 @@
 <?php
 
-namespace malkusch\bav\Encoding;
+namespace rotdrop\bav\Encoding;
 
-use malkusch\bav\Encoding\Exception\EncodingException;
-use malkusch\bav\Encoding\Exception\UnsupportedEncodingException;
+use rotdrop\bav\Encoding\Exception\EncodingException;
+use rotdrop\bav\Encoding\Exception\UnsupportedEncodingException;
 
 /**
  * Wrapper for the iconv Functions. If you use this wrapper

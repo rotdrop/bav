@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
 /**
  * Error when API is not available.

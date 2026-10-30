@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav\Encoding;
+namespace rotdrop\bav\Encoding;
 
-use malkusch\bav\Encoding\Exception\UnsupportedEncodingException;
+use rotdrop\bav\Encoding\Exception\UnsupportedEncodingException;
 
 /**
  * Wrapper for the Multibyte String Functions. If you use this wrapper

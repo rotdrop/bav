@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav\Encoding\Exception;
+namespace rotdrop\bav\Encoding\Exception;
 
-use malkusch\bav\Exception\BAVException;
+use rotdrop\bav\Exception\BAVException;
 
 /**
  * Copyright (C) 2006  Markus Malkusch <markus@malkusch.de>

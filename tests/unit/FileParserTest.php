@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\DataBackend\File\FileParser\FileParser;
+use rotdrop\bav\DataBackend\File\FileParser\FileParser;
 
 require_once __DIR__ . "/../bootstrap.php";
 

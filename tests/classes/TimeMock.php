@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
 /**
  * Mock for PHP's time() built-in.
@@ -40,9 +40,9 @@ class TimeMock
     }
 }
 
-namespace malkusch\bav\DataBackend\Update;
+namespace rotdrop\bav\DataBackend\Update;
 
-use malkusch\bav\TimeMock;
+use rotdrop\bav\TimeMock;
 
 function time()
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace malkusch\bav\DataBackend;
+namespace rotdrop\bav\DataBackend;
 
-use malkusch\bav\Bank\Agency;
-use malkusch\bav\Bank\Bank;
-use malkusch\bav\DataBackend\Exception\BankNotFoundException;
-use malkusch\bav\DataBackend\Exception\DataBackendException;
+use rotdrop\bav\Bank\Agency;
+use rotdrop\bav\Bank\Bank;
+use rotdrop\bav\DataBackend\Exception\BankNotFoundException;
+use rotdrop\bav\DataBackend\Exception\DataBackendException;
 
 /**
  * The DataBackend is an abstract class which is responsable for the

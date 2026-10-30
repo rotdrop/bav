@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Bank\Agency;
+use rotdrop\bav\Bank\Agency;
 
 require_once __DIR__ . "/../bootstrap.php";
 
@@ -35,7 +35,7 @@ class BAVFacadeTest extends \PHPUnit\Framework\TestCase
      */
     public function testFailGetBank()
     {
-        $this->expectException(\malkusch\bav\DataBackend\Exception\BankNotFoundException::class);
+        $this->expectException(\rotdrop\bav\DataBackend\Exception\BankNotFoundException::class);
 
         $bav = new BAV();
         $bav->getBank("12345678");
@@ -48,7 +48,7 @@ class BAVFacadeTest extends \PHPUnit\Framework\TestCase
      */
     public function testFailGetAgencies()
     {
-        $this->expectException(\malkusch\bav\DataBackend\Exception\BankNotFoundException::class);
+        $this->expectException(\rotdrop\bav\DataBackend\Exception\BankNotFoundException::class);
 
         $bav = new BAV();
         $bav->getAgencies("12345678");
@@ -101,7 +101,7 @@ class BAVFacadeTest extends \PHPUnit\Framework\TestCase
      */
     public function testFailGetMainAgency()
     {
-        $this->expectException(\malkusch\bav\DataBackend\Exception\BankNotFoundException::class);
+        $this->expectException(\rotdrop\bav\DataBackend\Exception\BankNotFoundException::class);
 
         $bav = new BAV();
         $bav->getMainAgency("12345678");

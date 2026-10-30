@@ -1,12 +1,12 @@
 <?php
 
-namespace malkusch\bav\DataBackend\File\Validator;
+namespace rotdrop\bav\DataBackend\File\Validator;
 
-use malkusch\bav\DataBackend\File\FileParser\FileParser;
-use malkusch\bav\DataBackend\File\Validator\Exception\FieldException;
-use malkusch\bav\DataBackend\File\Validator\Exception\FileValidatorException;
-use malkusch\bav\DataBackend\File\Validator\Exception\InvalidFilesizeException;
-use malkusch\bav\DataBackend\File\Validator\Exception\InvalidLineLengthException;
+use rotdrop\bav\DataBackend\File\FileParser\FileParser;
+use rotdrop\bav\DataBackend\File\Validator\Exception\FieldException;
+use rotdrop\bav\DataBackend\File\Validator\Exception\FileValidatorException;
+use rotdrop\bav\DataBackend\File\Validator\Exception\InvalidFilesizeException;
+use rotdrop\bav\DataBackend\File\Validator\Exception\InvalidLineLengthException;
 
 /**
  * Validates a bundesbank file.
