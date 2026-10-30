@@ -30,7 +30,7 @@ class FileUtil
     /**
      * Inject the configuration.
      */
-    public function __construct(?Configuration $configuration = null)
+    public function __construct(Configuration $configuration = null)
     {
         if (is_null($configuration)) {
             $configuration = ConfigurationRegistry::getConfiguration();
