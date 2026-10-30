@@ -21,8 +21,8 @@ use malkusch\bav\DataBackend\File\Validator\FileValidator;
 use malkusch\bav\Util\Exception\FileException;
 use malkusch\bav\Util\FileUtil;
 
-use \malkusch\index\FixedSizeIndex;
-use \malkusch\index\IndexException;
+use \rotdrop\index\FixedSizeIndex;
+use \rotdrop\index\IndexException;
 
 /**
  * It uses the huge file from the Bundesbank and uses a binary search to find a row.
