@@ -217,8 +217,38 @@ in the `mb_*` functions. If these functions are missing BAV works only with the 
 
 * **doctrine/orm**: You can use
 [`DoctrineBackendContainer`](http://bav-php.github.io/bav/api/class-malkusch.bav.DoctrineBackendContainer.html)
-which uses doctrine
-as data backend.
+with Doctrine ORM **3.7 or later within 3.x**, DBAL 3.8.2 or 4.x, and
+`symfony/cache` ^7.4 as a data backend. ORM 2 is no longer supported.
+
+```sh
+composer require doctrine/orm:^3.7 symfony/cache:^7.4
+```
+
+```php
+use malkusch\bav\Configuration\DefaultConfiguration;
+use malkusch\bav\DataBackend\Orm\Doctrine\DoctrineBackendContainer;
+
+$configuration = new DefaultConfiguration();
+$configuration->setDataBackendContainer(DoctrineBackendContainer::buildByConnection([
+    'driver' => 'pdo_mysql',
+    'host' => 'localhost',
+    'dbname' => 'bav',
+    'user' => 'bav',
+    'password' => 'your-database-password',
+    'charset' => 'utf8mb4',
+]));
+
+return $configuration;
+```
+
+`buildByConnection()` accepts DBAL connection parameters or an existing
+`Doctrine\DBAL\Connection`, not the former `['pdo' => $pdo]` option. You can
+also inject an `EntityManagerInterface` into `DoctrineBackendContainer` directly;
+configure it with the XML mapping paths from `getXMLMappings()`.
+Existing BAV table and column names are unchanged. PHP 8.4+ uses native lazy
+objects; PHP 8.3 generates proxy classes in the system temporary directory.
+An update replaces all bank data and clears the entity manager's identity map;
+use a dedicated entity manager and obtain fresh bank objects after updating.
 
 
 # Development and tests
@@ -234,7 +264,8 @@ composer test
 ```
 
 The default `unit` suite runs offline, without a database server or downloaded bank
-list. It uses the checked-in account cases and Bundesbank excerpt. To run one
+list. It uses the checked-in account cases and Bundesbank excerpt, including
+in-memory SQLite tests for the Doctrine backend. To run one
 test or randomize execution order:
 
 ```sh
@@ -252,12 +283,15 @@ and downloaded `data/banklist.txt` before running them:
 export PDO_DSN='mysql:host=localhost;dbname=bav_test'
 export PDO_USER='bav_test'
 export PDO_PASSWORD='your-test-database-password'
+export DBAL_URL='mysql://bav_test:your-test-database-password@localhost/bav_test'
 php tests/bin/test-install.php
 composer test:integration
 ```
 
 The facade and backend tests retain their historical bank and agency
 expectations, which may differ from today's Bundesbank data.
+Doctrine integration tests use `DBAL_URL` (URL-encode special characters in
+credentials); PDO tests continue to use `PDO_DSN`, `PDO_USER`, and `PDO_PASSWORD`.
 
 The exhaustive cross-project comparisons are opt-in, require the integration
 environment and the optional Kontocheck extension, and can take days:

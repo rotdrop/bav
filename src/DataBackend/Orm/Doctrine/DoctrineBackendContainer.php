@@ -5,8 +5,11 @@ namespace malkusch\bav\DataBackend\Orm\Doctrine;
 use malkusch\bav\DataBackend\DataBackend;
 use malkusch\bav\DataBackend\DataBackendContainer;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\ORMSetup;
 
 /**
  * Container for DoctrineDataBackend objects.
@@ -23,17 +26,14 @@ use Doctrine\ORM\Tools\Setup;
 class DoctrineBackendContainer extends DataBackendContainer
 {
     
-    /**
-     * @var EntityManager
-     */
-    private $em;
+    private EntityManagerInterface $em;
     
     /**
      * Return the paths to the XML-Mappings
      *
      * @return string[]
      */
-    public static function getXMLMappings()
+    public static function getXMLMappings(): array
     {
         return array(__DIR__ . "/Mapping/");
     }
@@ -41,22 +41,38 @@ class DoctrineBackendContainer extends DataBackendContainer
     /**
      * Builds a container for a connection.
      *
-     * @param mixed $connection Doctrine::DBAL connection
+     * @param Connection|array $connection DBAL connection or connection parameters (not a raw PDO instance)
      * @return DoctrineBackendContainer
      */
-    public static function buildByConnection($connection, $isDevMode = false)
+    public static function buildByConnection(Connection|array $connection, bool $isDevMode = false): self
     {
         $mappings = self::getXMLMappings();
-        $config = Setup::createXMLMetadataConfiguration($mappings, $isDevMode);
+        $config = ORMSetup::createXMLMetadataConfig($mappings, $isDevMode);
+        if (PHP_VERSION_ID >= 80400) {
+            $config->enableNativeLazyObjects(true);
+        } else {
+            $config->setProxyDir(sys_get_temp_dir());
+            $config->setProxyNamespace('BAVDoctrineProxies');
+            $config->setAutoGenerateProxyClasses(true);
+        }
 
-        $entityManager = EntityManager::create($connection, $config);
+        if (is_array($connection)) {
+            if (array_key_exists('pdo', $connection)) {
+                throw new \InvalidArgumentException(
+                    "Raw PDO connections are no longer supported; pass DBAL connection parameters or a DBAL Connection."
+                );
+            }
+            $connection = DriverManager::getConnection($connection);
+        }
+
+        $entityManager = new EntityManager($connection, $config);
         return new self($entityManager);
     }
     
     /**
      * Injects the EntityManager
      */
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManagerInterface $entityManager)
     {
         $this->em = $entityManager;
     }
@@ -64,9 +80,9 @@ class DoctrineBackendContainer extends DataBackendContainer
     /**
      * Gets the EntityManager
      *
-     * @return EntityManager
+     * @return EntityManagerInterface
      */
-    public function getEntityManager()
+    public function getEntityManager(): EntityManagerInterface
     {
         return $this->em;
     }

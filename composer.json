@@ -45,11 +45,11 @@
         "ext-mbstring": "Enables UTF-8 support",
         "ext-dom": "Enables picking the download URI by xpath",
         "lib-curl": "Enables API for downloading the bank file",
-        "doctrine/orm": "Support for Doctrine ORM data backend"
+        "doctrine/orm": "Version ^3.7 for the Doctrine ORM data backend (also requires symfony/cache ^7.4)"
     },
     "require-dev": {
         "phpunit/phpunit": "^12.5",
-        "doctrine/orm": "^2",
+        "doctrine/orm": "^3.7",
         "symfony/cache": "^7.4"
     },
     "archive": {

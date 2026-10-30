@@ -65,7 +65,7 @@ class BackendTest extends \PHPUnit\Framework\TestCase
             case 'doctrine':
                 $connection = $installation
                     ? array('driver' => 'pdo_sqlite', 'memory' => true)
-                    : array('pdo' => PDOFactory::makePDO());
+                    : DoctrineConnectionFactory::makeConnection();
                 $container = DoctrineBackendContainer::buildByConnection($connection, true);
                 $backend = new DoctrineDataBackend($container->getEntityManager());
                 break;
