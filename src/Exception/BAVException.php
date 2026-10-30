@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bav\Exception;
+namespace rotdrop\bav\Exception;
 
 /**
  * Base exception

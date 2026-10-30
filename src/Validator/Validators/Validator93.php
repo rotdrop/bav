@@ -1,10 +1,10 @@
 <?php
 
-namespace malkusch\bav\Validator\Validators;
+namespace rotdrop\bav\Validator\Validators;
 
-use malkusch\bav\Bank\Bank;
-use malkusch\bav\Validator\Exception\ValidatorOutOfBoundsException;
-use malkusch\bav\Validator\ValidatorChain;
+use rotdrop\bav\Bank\Bank;
+use rotdrop\bav\Validator\Exception\ValidatorOutOfBoundsException;
+use rotdrop\bav\Validator\ValidatorChain;
 
 /**
  * Implements 93

@@ -1,9 +1,9 @@
 <?php
 
-namespace malkusch\bav\DataBackend\Pdo;
+namespace rotdrop\bav\DataBackend\Pdo;
 
-use malkusch\bav\DataBackend\DataBackend;
-use malkusch\bav\DataBackend\DataBackendContainer;
+use rotdrop\bav\DataBackend\DataBackend;
+use rotdrop\bav\DataBackend\DataBackendContainer;
 
 /**
  * Container for PDODataBackend objects.

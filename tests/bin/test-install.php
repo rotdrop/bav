@@ -7,11 +7,11 @@
  * @license WTFPL
  */
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Configuration\ConfigurationRegistry;
-use malkusch\bav\DataBackend\Exception\DataBackendException;
-use malkusch\bav\DataBackend\Pdo\PDODataBackendContainer;
+use rotdrop\bav\Configuration\ConfigurationRegistry;
+use rotdrop\bav\DataBackend\Exception\DataBackendException;
+use rotdrop\bav\DataBackend\Pdo\PDODataBackendContainer;
 
 require_once __DIR__ . "/../bootstrap.php";
 

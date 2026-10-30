@@ -1,11 +1,11 @@
 <?php
 
-namespace malkusch\bav\DataBackend;
+namespace rotdrop\bav\DataBackend;
 
-use malkusch\bav\Bank\Agency;
-use malkusch\bav\DataBackend\Exception\DataBackendException;
-use malkusch\bav\DataBackend\Exception\DataBackendIOException;
-use malkusch\bav\DataBackend\Exception\MissingAttributesDataBackendIOException;
+use rotdrop\bav\Bank\Agency;
+use rotdrop\bav\DataBackend\Exception\DataBackendException;
+use rotdrop\bav\DataBackend\Exception\DataBackendIOException;
+use rotdrop\bav\DataBackend\Exception\MissingAttributesDataBackendIOException;
 
 /**
  * Additional methods for SQL based data backends

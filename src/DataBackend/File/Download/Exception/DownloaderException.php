@@ -1,9 +1,9 @@
 <?php
 
-namespace malkusch\bav\DataBackend\File\Download\Exception;
+namespace rotdrop\bav\DataBackend\File\Download\Exception;
 
-use malkusch\bav\DataBackend\Exception\DataBackendException;
-use malkusch\bav\DataBackend\File\Download\Downloader;
+use rotdrop\bav\DataBackend\Exception\DataBackendException;
+use rotdrop\bav\DataBackend\File\Download\Downloader;
 
 /**
  * Exception in downloads.

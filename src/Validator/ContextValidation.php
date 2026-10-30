@@ -1,12 +1,12 @@
 <?php
 
-namespace malkusch\bav\Validator;
+namespace rotdrop\bav\Validator;
 
-use malkusch\bav\Bank\Bank;
-use malkusch\bav\DataBackend\DataBackend;
-use malkusch\bav\DataBackend\Exception\BankNotFoundException;
-use malkusch\bav\DataBackend\Exception\DataBackendException;
-use malkusch\bav\DataBackend\Exception\InvalidContextException;
+use rotdrop\bav\Bank\Bank;
+use rotdrop\bav\DataBackend\DataBackend;
+use rotdrop\bav\DataBackend\Exception\BankNotFoundException;
+use rotdrop\bav\DataBackend\Exception\DataBackendException;
+use rotdrop\bav\DataBackend\Exception\InvalidContextException;
 
 /**
  * Context validation

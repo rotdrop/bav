@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;

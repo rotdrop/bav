@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bav\DataBackend\File\Validator\Exception;
+namespace rotdrop\bav\DataBackend\File\Validator\Exception;
 
 /**
  * Invalid field content.

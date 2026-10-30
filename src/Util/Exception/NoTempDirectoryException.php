@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bav\Util\Exception;
+namespace rotdrop\bav\Util\Exception;
 
 /**
  * BAV couldn't find a writable directory for temporary files.

@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Configuration\DefaultConfiguration;
+use rotdrop\bav\Configuration\DefaultConfiguration;
 
 $configuration = new DefaultConfiguration();
 

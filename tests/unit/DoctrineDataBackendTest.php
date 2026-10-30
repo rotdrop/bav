@@ -1,19 +1,19 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaValidator;
-use malkusch\bav\DataBackend\Exception\BankNotFoundException;
-use malkusch\bav\DataBackend\Exception\DataBackendException;
-use malkusch\bav\DataBackend\Exception\DataBackendIOException;
-use malkusch\bav\DataBackend\Exception\MissingAttributesDataBackendIOException;
-use malkusch\bav\DataBackend\File\FileDataBackend;
-use malkusch\bav\DataBackend\Orm\Doctrine\DoctrineBackendContainer;
-use malkusch\bav\DataBackend\Orm\Doctrine\DoctrineDataBackend;
-use malkusch\bav\DataBackend\Orm\MetaData;
+use rotdrop\bav\DataBackend\Exception\BankNotFoundException;
+use rotdrop\bav\DataBackend\Exception\DataBackendException;
+use rotdrop\bav\DataBackend\Exception\DataBackendIOException;
+use rotdrop\bav\DataBackend\Exception\MissingAttributesDataBackendIOException;
+use rotdrop\bav\DataBackend\File\FileDataBackend;
+use rotdrop\bav\DataBackend\Orm\Doctrine\DoctrineBackendContainer;
+use rotdrop\bav\DataBackend\Orm\Doctrine\DoctrineDataBackend;
+use rotdrop\bav\DataBackend\Orm\MetaData;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 

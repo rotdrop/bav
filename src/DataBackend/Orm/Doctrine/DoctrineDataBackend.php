@@ -1,18 +1,18 @@
 <?php
 
-namespace malkusch\bav\DataBackend\Orm\Doctrine;
+namespace rotdrop\bav\DataBackend\Orm\Doctrine;
 
-use malkusch\bav\Bank\Agency;
-use malkusch\bav\Bank\Bank;
-use malkusch\bav\DataBackend\Exception\BankNotFoundException;
-use malkusch\bav\DataBackend\Exception\DataBackendException;
-use malkusch\bav\DataBackend\Exception\DataBackendIOException;
-use malkusch\bav\DataBackend\Exception\MissingAttributesDataBackendIOException;
-use malkusch\bav\DataBackend\Exception\NoMainAgencyException;
-use malkusch\bav\DataBackend\File\FileDataBackend;
-use malkusch\bav\DataBackend\Orm\MetaData;
-use malkusch\bav\DataBackend\SQLDataBackend;
-use malkusch\bav\Util\FileUtil;
+use rotdrop\bav\Bank\Agency;
+use rotdrop\bav\Bank\Bank;
+use rotdrop\bav\DataBackend\Exception\BankNotFoundException;
+use rotdrop\bav\DataBackend\Exception\DataBackendException;
+use rotdrop\bav\DataBackend\Exception\DataBackendIOException;
+use rotdrop\bav\DataBackend\Exception\MissingAttributesDataBackendIOException;
+use rotdrop\bav\DataBackend\Exception\NoMainAgencyException;
+use rotdrop\bav\DataBackend\File\FileDataBackend;
+use rotdrop\bav\DataBackend\Orm\MetaData;
+use rotdrop\bav\DataBackend\SQLDataBackend;
+use rotdrop\bav\Util\FileUtil;
 
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Exception\TableNotFoundException;
@@ -60,7 +60,7 @@ class DoctrineDataBackend extends SQLDataBackend
     public function getAgenciesForBank(Bank $bank)
     {
         $query = $this->em->createQuery(
-            "select agency from malkusch\bav\Bank\Agency agency where agency.id != :mainAgency and agency.bank=:bank"
+            "select agency from rotdrop\bav\Bank\Agency agency where agency.id != :mainAgency and agency.bank=:bank"
         );
         $query->setParameters(array(
             "mainAgency" => $bank->getMainAgency()->getID(),
@@ -150,8 +150,8 @@ class DoctrineDataBackend extends SQLDataBackend
             $fileBackend->install();
             $this->free();
             $this->em->wrapInTransaction(function (EntityManagerInterface $em) use ($fileBackend) {
-                $em->createQuery("DELETE FROM malkusch\bav\Bank\Agency")->execute();
-                $em->createQuery("DELETE FROM malkusch\bav\Bank\Bank")->execute();
+                $em->createQuery("DELETE FROM rotdrop\bav\Bank\Agency")->execute();
+                $em->createQuery("DELETE FROM rotdrop\bav\Bank\Bank")->execute();
 
                 foreach ($fileBackend->getAllBanks() as $bank) {
                     try {

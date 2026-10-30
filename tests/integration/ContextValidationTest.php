@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Validator\ContextValidation;
+use rotdrop\bav\Validator\ContextValidation;
 
 require_once __DIR__ . "/../bootstrap.php";
 
@@ -124,7 +124,7 @@ class ContextValidationTest extends \PHPUnit\Framework\TestCase
      */
     public function testFilterInvalidContext()
     {
-        $this->expectException(\malkusch\bav\DataBackend\Exception\InvalidContextException::class);
+        $this->expectException(\rotdrop\bav\DataBackend\Exception\InvalidContextException::class);
 
         filter_var(
             "0",
@@ -140,7 +140,7 @@ class ContextValidationTest extends \PHPUnit\Framework\TestCase
      */
     public function testInvalidContext()
     {
-        $this->expectException(\malkusch\bav\DataBackend\Exception\InvalidContextException::class);
+        $this->expectException(\rotdrop\bav\DataBackend\Exception\InvalidContextException::class);
 
         $this->validation->isValidAccount("12345");
     }

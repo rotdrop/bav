@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bav\Encoding\Exception;
+namespace rotdrop\bav\Encoding\Exception;
 
 /**
  * Copyright (C) 2006  Markus Malkusch <markus@malkusch.de>

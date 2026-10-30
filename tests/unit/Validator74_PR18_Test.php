@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Validator\Validators\Validator74;
+use rotdrop\bav\Validator\Validators\Validator74;
 
 require_once __DIR__ . "/../bootstrap.php";
 
@@ -29,8 +29,8 @@ class Validator74_PR18_Test extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider("provideTestAllHalfDecades")]
     public function testAllHalfDecades($account, $expected)
     {
-        $backend = $this->createStub(\malkusch\bav\DataBackend\DataBackend::class);
-        $bank = new \malkusch\bav\Bank\Bank($backend, 1, 74);
+        $backend = $this->createStub(\rotdrop\bav\DataBackend\DataBackend::class);
+        $bank = new \rotdrop\bav\Bank\Bank($backend, 1, 74);
         
         $validator = new Validator74($bank);
         $this->assertEquals($expected, $validator->isValid($account));

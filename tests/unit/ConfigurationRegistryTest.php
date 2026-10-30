@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Configuration\ConfigurationRegistry;
+use rotdrop\bav\Configuration\ConfigurationRegistry;
 
 require_once __DIR__ . "/../bootstrap.php";
 
@@ -45,7 +45,7 @@ class ConfigurationRegistryTest extends \PHPUnit\Framework\TestCase
         ConfigurationRegistry::classConstructor();
         $configuration = ConfigurationRegistry::getConfiguration();
         
-        $this->assertInstanceOf("malkusch\bav\Configuration\Configuration", $configuration);
+        $this->assertInstanceOf("rotdrop\bav\Configuration\Configuration", $configuration);
         $this->assertEquals("test", $configuration->getTempDirectory());
         
     }
@@ -60,7 +60,7 @@ class ConfigurationRegistryTest extends \PHPUnit\Framework\TestCase
         ConfigurationRegistry::classConstructor();
         $configuration = ConfigurationRegistry::getConfiguration();
         
-        $this->assertInstanceOf("malkusch\bav\Configuration\DefaultConfiguration", $configuration);
+        $this->assertInstanceOf("rotdrop\bav\Configuration\DefaultConfiguration", $configuration);
         $this->assertNotEquals("test", $configuration->getTempDirectory());
     }
 }

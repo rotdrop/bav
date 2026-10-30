@@ -1,10 +1,10 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Bank\Bank;
-use malkusch\bav\DataBackend\Pdo\PDODataBackend;
-use malkusch\bav\Validator\ValidatorBankDependent;
+use rotdrop\bav\Bank\Bank;
+use rotdrop\bav\DataBackend\Pdo\PDODataBackend;
+use rotdrop\bav\Validator\ValidatorBankDependent;
 
 require_once __DIR__ . "/../bootstrap.php";
 

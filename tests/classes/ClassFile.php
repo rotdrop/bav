@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
 /**
  * This class is used for debugging purposes. An Object contains the path to the class

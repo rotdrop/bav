@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Configuration\ConfigurationLocator;
+use rotdrop\bav\Configuration\ConfigurationLocator;
 
 require_once __DIR__ . "/../bootstrap.php";
 
@@ -45,7 +45,7 @@ class ConfigurationLocatorTest extends \PHPUnit\Framework\TestCase
      */
     public function testlocateThrowsException()
     {
-        $this->expectException(\malkusch\bav\Configuration\ConfigurationException::class);
+        $this->expectException(\rotdrop\bav\Configuration\ConfigurationException::class);
 
         $locator = new ConfigurationLocator(array(
             __DIR__ . "/../data/no_configuration.php"
@@ -65,7 +65,7 @@ class ConfigurationLocatorTest extends \PHPUnit\Framework\TestCase
         $locator = new ConfigurationLocator($paths);
         $configuration = $locator->locate();
         
-        $this->assertInstanceOf("malkusch\bav\Configuration\Configuration", $configuration);
+        $this->assertInstanceOf("rotdrop\bav\Configuration\Configuration", $configuration);
         $this->assertEquals("test", $configuration->getTempDirectory());
     }
     
@@ -101,7 +101,7 @@ class ConfigurationLocatorTest extends \PHPUnit\Framework\TestCase
         $locator = new ConfigurationLocator($paths);
         $configuration = $locator->locate();
         
-        $this->assertInstanceOf("malkusch\bav\Configuration\Configuration", $configuration);
+        $this->assertInstanceOf("rotdrop\bav\Configuration\Configuration", $configuration);
         $this->assertEquals("test", $configuration->getTempDirectory());
         
     }

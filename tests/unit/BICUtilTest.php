@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Util\BICUtil;
+use rotdrop\bav\Util\BICUtil;
 
 require_once __DIR__ . "/../bootstrap.php";
 

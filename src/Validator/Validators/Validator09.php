@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav\Validator\Validators;
+namespace rotdrop\bav\Validator\Validators;
 
-use malkusch\bav\Validator\Validator;
+use rotdrop\bav\Validator\Validator;
 
 /**
  * Implements 09

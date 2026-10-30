@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav\DataBackend\File\FileParser;
+namespace rotdrop\bav\DataBackend\File\FileParser;
 
-use malkusch\bav\DataBackend\File\FileParser\Exception\UndefinedFileParserContextException;
+use rotdrop\bav\DataBackend\File\FileParser\Exception\UndefinedFileParserContextException;
 
 /**
  * This class helps Databackend_File to know the interval of lines which

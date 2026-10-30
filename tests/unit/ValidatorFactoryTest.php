@@ -1,9 +1,9 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Bank\Bank;
-use malkusch\bav\Validator\ValidatorFactory;
+use rotdrop\bav\Bank\Bank;
+use rotdrop\bav\Validator\ValidatorFactory;
 
 require_once __DIR__ . "/../bootstrap.php";
 
@@ -36,11 +36,11 @@ class ValidatorFactoryTest extends \PHPUnit\Framework\TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider("provideTestBuild")]
     public function testBuild($type)
     {
-        $backend = $this->createStub(\malkusch\bav\DataBackend\DataBackend::class);
+        $backend = $this->createStub(\rotdrop\bav\DataBackend\DataBackend::class);
         $bank = new Bank($backend, null, $type);
         
         $validator = $this->factory->build($bank);
-        $this->assertInstanceOf("\\malkusch\\bav\\Validator\\Validators\\Validator$type", $validator);
+        $this->assertInstanceOf("\\rotdrop\\bav\\Validator\\Validators\\Validator$type", $validator);
     }
     
     /**

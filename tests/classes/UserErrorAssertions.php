@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
 trait UserErrorAssertions
 {

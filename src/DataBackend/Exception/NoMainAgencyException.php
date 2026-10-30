@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav\DataBackend\Exception;
+namespace rotdrop\bav\DataBackend\Exception;
 
-use malkusch\bav\Bank\Bank;
+use rotdrop\bav\Bank\Bank;
 
 /**
  * Copyright (C) 2010  Markus Malkusch <markus@malkusch.de>

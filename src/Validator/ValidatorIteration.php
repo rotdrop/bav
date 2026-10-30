@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav\Validator;
+namespace rotdrop\bav\Validator;
 
-use malkusch\bav\Bank\Bank;
+use rotdrop\bav\Bank\Bank;
 
 /**
  * Copyright (C) 2006  Markus Malkusch <markus@malkusch.de>

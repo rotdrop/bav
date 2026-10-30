@@ -7,15 +7,16 @@ BAV (bank account validator) is a validation library for German bank accounts.
 
 Requires PHP 8.3 or later.
 
-Use [Composer](https://getcomposer.org/):
+Use [Composer](https://getcomposer.org/) to install the current development
+version:
 
-```json
-{
-    "require": {
-        "malkusch/bav": "^1"
-    }
-}
+```sh
+composer require rotdrop/bav:dev-master@dev
 ```
+
+The `@dev` stability flag applies only to BAV and does not lower your project's
+global minimum stability. Use a stable version constraint when a release with
+the `rotdrop\bav` namespace is available.
 
 Include Composer's autoloader before using BAV:
 
@@ -23,25 +24,26 @@ Include Composer's autoloader before using BAV:
 require_once __DIR__ . '/vendor/autoload.php';
 ```
 
-Classes use the `malkusch\bav` namespace prefix and are loaded via PSR-4 from
+Classes use the `rotdrop\bav` namespace prefix and are loaded via PSR-4 from
 `src/`. Sub-namespaces mirror the original directory hierarchy, with an
 uppercase first letter for each directory and namespace segment. For example,
 `classes/dataBackend/file/FileDataBackend.php` is now
 `src/DataBackend/File/FileDataBackend.php`, declaring
-`malkusch\bav\DataBackend\File\FileDataBackend`.
+`rotdrop\bav\DataBackend\File\FileDataBackend`.
 
-The facade remains `malkusch\bav\BAV`. Other classes have new fully qualified
-names; update imports and class-name strings when upgrading. Common examples:
+The facade is `rotdrop\bav\BAV`. This release changes the namespace from
+`malkusch\bav` to `rotdrop\bav`; update imports and class-name strings when
+upgrading. No compatibility aliases for the old namespace are provided.
+Common class names include:
 
 | Class | New fully qualified name |
 |---|---|
-| `Bank` | `malkusch\bav\Bank\Bank` |
-| `DefaultConfiguration` | `malkusch\bav\Configuration\DefaultConfiguration` |
-| `PDODataBackendContainer` | `malkusch\bav\DataBackend\Pdo\PDODataBackendContainer` |
-| `AutomaticUpdatePlan` | `malkusch\bav\DataBackend\Update\AutomaticUpdatePlan` |
-| `Validator00` | `malkusch\bav\Validator\Validators\Validator00` |
+| `Bank` | `rotdrop\bav\Bank\Bank` |
+| `DefaultConfiguration` | `rotdrop\bav\Configuration\DefaultConfiguration` |
+| `PDODataBackendContainer` | `rotdrop\bav\DataBackend\Pdo\PDODataBackendContainer` |
+| `AutomaticUpdatePlan` | `rotdrop\bav\DataBackend\Update\AutomaticUpdatePlan` |
+| `Validator00` | `rotdrop\bav\Validator\Validators\Validator00` |
 
-No aliases for the old flat class names are registered.
 The generated `autoloader/autoloader.php` is no longer used; replace
 any direct includes of it with Composer's autoloader. Run `composer install`
 after checking out the repository, or `composer dump-autoload` after changing
@@ -50,11 +52,11 @@ autoload mappings in an existing installation.
 # Configuration
 
 You can use BAV out of the box. BAV comes with a ready to play default
-configuration ([`DefaultConfiguration`](http://bav-php.github.io/bav/api/class-malkusch.bav.DefaultConfiguration.html)):
+configuration ([`DefaultConfiguration`](http://bav-php.github.io/bav/api/class-rotdrop.bav.DefaultConfiguration.html)):
 
 * `UTF-8` encoding (if supported)
 
-* [`FileDataBackendContainer`](http://bav-php.github.io/bav/api/class-malkusch.bav.FileDataBackendContainer.html).
+* [`FileDataBackendContainer`](http://bav-php.github.io/bav/api/class-rotdrop.bav.FileDataBackendContainer.html).
 I.e. it uses binary search on the file from the Bundesbank.
 Note that this data backend uses the directory `bav/data` for install and update
 operations. You have to make sure that this directory is writable.
@@ -66,16 +68,16 @@ script. The container will download the Bundesbank file upon the first execution
 is outdated.
 
 You can define your own configuration by calling
-[`ConfigurationRegistry::setConfiguration()`](http://bav-php.github.io/bav/api/class-malkusch.bav.ConfigurationRegistry.html#_setConfiguration)
+[`ConfigurationRegistry::setConfiguration()`](http://bav-php.github.io/bav/api/class-rotdrop.bav.ConfigurationRegistry.html#_setConfiguration)
 or preferably creating the file `bav/configuration.php` which returns a
-[`Configuration`](http://bav-php.github.io/bav/api/class-malkusch.bav.Configuration.html) object:
+[`Configuration`](http://bav-php.github.io/bav/api/class-rotdrop.bav.Configuration.html) object:
 
 ```php
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Configuration\DefaultConfiguration;
-use malkusch\bav\DataBackend\Pdo\PDODataBackendContainer;
-use malkusch\bav\DataBackend\Update\AutomaticUpdatePlan;
+use rotdrop\bav\Configuration\DefaultConfiguration;
+use rotdrop\bav\DataBackend\Pdo\PDODataBackendContainer;
+use rotdrop\bav\DataBackend\Update\AutomaticUpdatePlan;
 
 $configuration = new DefaultConfiguration();
 
@@ -100,7 +102,7 @@ Call `bin/bav-update.php`.
 ## Programmatically
 
 ```php
-use malkusch\bav\BAV;
+use rotdrop\bav\BAV;
 
 $bav = new BAV();
 $bav->update();
@@ -109,14 +111,14 @@ $bav->update();
 ## Automatic
 
 Enable automatic updates with
-[`AutomaticUpdatePlan`](http://bav-php.github.io/bav/api/class-malkusch.bav.AutomaticUpdatePlan.html)
+[`AutomaticUpdatePlan`](http://bav-php.github.io/bav/api/class-rotdrop.bav.AutomaticUpdatePlan.html)
 in your `bav/configuration.php`:
 
 ```php
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Configuration\DefaultConfiguration;
-use malkusch\bav\DataBackend\Update\AutomaticUpdatePlan;
+use rotdrop\bav\Configuration\DefaultConfiguration;
+use rotdrop\bav\DataBackend\Update\AutomaticUpdatePlan;
 
 $configuration = new DefaultConfiguration();
 $configuration->setUpdatePlan(new AutomaticUpdatePlan());
@@ -130,50 +132,50 @@ hook. I.e. it won't bother users during normal operations.
 # Usage
 
 You can use BAV with the api facade
-[`BAV`](http://bav-php.github.io/bav/api/class-malkusch.bav.BAV.html):
+[`BAV`](http://bav-php.github.io/bav/api/class-rotdrop.bav.BAV.html):
 
-* [`BAV::isValidBank($bankID)`](http://bav-php.github.io/bav/api/class-malkusch.bav.BAV.html#_isValidBank):
+* [`BAV::isValidBank($bankID)`](http://bav-php.github.io/bav/api/class-rotdrop.bav.BAV.html#_isValidBank):
 Returns true for existing bank ids.
 
-* [`BAV::isValidBankAccount($bankID, $account)`](http://bav-php.github.io/bav/api/class-malkusch.bav.BAV.html#_isValidBankAccount):
+* [`BAV::isValidBankAccount($bankID, $account)`](http://bav-php.github.io/bav/api/class-rotdrop.bav.BAV.html#_isValidBankAccount):
 Returns true for existing accounts of an existing bank.
 
-* [`BAV::isValidAccount($account)`](http://bav-php.github.io/bav/api/class-malkusch.bav.BAV.html#_isValidAccount):
+* [`BAV::isValidAccount($account)`](http://bav-php.github.io/bav/api/class-rotdrop.bav.BAV.html#_isValidAccount):
 This method validates an account against the bank of the last `isValidBank()` call.
 
-* [`BAV::getValidBankFilterCallback()`](http://bav-php.github.io/bav/api/class-malkusch.bav.BAV.html#_getValidBankFilterCallback):
+* [`BAV::getValidBankFilterCallback()`](http://bav-php.github.io/bav/api/class-rotdrop.bav.BAV.html#_getValidBankFilterCallback):
 Returns a callback for filter bank validation.
 
-* [`BAV::getValidAccountFilterCallback()`](http://bav-php.github.io/bav/api/class-malkusch.bav.BAV.html#_getValidAccountFilterCallback):
+* [`BAV::getValidAccountFilterCallback()`](http://bav-php.github.io/bav/api/class-rotdrop.bav.BAV.html#_getValidAccountFilterCallback):
 Returns a callback for filter account validation. The account filter needs
 to be called after the bank filter.
 
-* [`BAV::getMainAgency()`](http://bav-php.github.io/bav/api/class-malkusch.bav.BAV.html#_getMainAgency):
+* [`BAV::getMainAgency()`](http://bav-php.github.io/bav/api/class-rotdrop.bav.BAV.html#_getMainAgency):
 Returns the main agency of a bank.
 
-* [`BAV::getAgencies()`](http://bav-php.github.io/bav/api/class-malkusch.bav.BAV.html#_getAgencies):
+* [`BAV::getAgencies()`](http://bav-php.github.io/bav/api/class-rotdrop.bav.BAV.html#_getAgencies):
 Returns further agencies. The main agency is not included in this list.
 This list can be empty.
 
-An [`Agency`](http://bav-php.github.io/bav/api/class-malkusch.bav.Agency.html)
+An [`Agency`](http://bav-php.github.io/bav/api/class-rotdrop.bav.Agency.html)
 object has the fields:
 
-* [`Agency::getBIC()`](http://bav-php.github.io/bav/api/class-malkusch.bav.Agency.html#_getBIC)
+* [`Agency::getBIC()`](http://bav-php.github.io/bav/api/class-rotdrop.bav.Agency.html#_getBIC)
 
-* [`Agency::getPostcode()`](http://bav-php.github.io/bav/api/class-malkusch.bav.Agency.html#_getPostcode)
+* [`Agency::getPostcode()`](http://bav-php.github.io/bav/api/class-rotdrop.bav.Agency.html#_getPostcode)
 
-* [`Agency::getCity()`](http://bav-php.github.io/bav/api/class-malkusch.bav.Agency.html#_getCity)
+* [`Agency::getCity()`](http://bav-php.github.io/bav/api/class-rotdrop.bav.Agency.html#_getCity)
 
-* [`Agency::getName()`](http://bav-php.github.io/bav/api/class-malkusch.bav.Agency.html#_getName)
+* [`Agency::getName()`](http://bav-php.github.io/bav/api/class-rotdrop.bav.Agency.html#_getName)
 
-* [`Agency::getShortTerm()`](http://bav-php.github.io/bav/api/class-malkusch.bav.Agency.html#_getShortTerm)
+* [`Agency::getShortTerm()`](http://bav-php.github.io/bav/api/class-rotdrop.bav.Agency.html#_getShortTerm)
 
-* [`Agency::getPAN()`](http://bav-php.github.io/bav/api/class-malkusch.bav.Agency.html#_getPAN)
+* [`Agency::getPAN()`](http://bav-php.github.io/bav/api/class-rotdrop.bav.Agency.html#_getPAN)
 
 ## Example
 
 ```php
-use malkusch\bav\BAV;
+use rotdrop\bav\BAV;
 
 $bav = new BAV();
 $bankID  = "10000000";
@@ -212,11 +214,11 @@ You may have:
 in the `mb_*` functions. If these functions are missing BAV works only with the ISO-8859-15 encoding.
 
 * **PDO**: If you intend to use a DBS you need to use
-[`PDODataBackendContainer`](http://bav-php.github.io/bav/api/class-malkusch.bav.PDODataBackendContainer.html). 
+[`PDODataBackendContainer`](http://bav-php.github.io/bav/api/class-rotdrop.bav.PDODataBackendContainer.html).
 `PDODataBackendContainer` needs a `PDO` support compiled in PHP.
 
 * **doctrine/orm**: You can use
-[`DoctrineBackendContainer`](http://bav-php.github.io/bav/api/class-malkusch.bav.DoctrineBackendContainer.html)
+[`DoctrineBackendContainer`](http://bav-php.github.io/bav/api/class-rotdrop.bav.DoctrineBackendContainer.html)
 with Doctrine ORM **3.7 or later within 3.x**, DBAL 3.8.2 or 4.x, and
 `symfony/cache` ^7.4 as a data backend. ORM 2 is no longer supported.
 
@@ -225,8 +227,8 @@ composer require doctrine/orm:^3.7 symfony/cache:^7.4
 ```
 
 ```php
-use malkusch\bav\Configuration\DefaultConfiguration;
-use malkusch\bav\DataBackend\Orm\Doctrine\DoctrineBackendContainer;
+use rotdrop\bav\Configuration\DefaultConfiguration;
+use rotdrop\bav\DataBackend\Orm\Doctrine\DoctrineBackendContainer;
 
 $configuration = new DefaultConfiguration();
 $configuration->setDataBackendContainer(DoctrineBackendContainer::buildByConnection([

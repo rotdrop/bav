@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bav\Configuration;
+namespace rotdrop\bav\Configuration;
 
 /**
  * Helper for locating a BAV configuration.
@@ -47,7 +47,7 @@ class ConfigurationLocator
             $configuration = require $resolvedPath;
             if (! $configuration instanceof Configuration) {
                 throw new ConfigurationException(
-                    "$resolvedPath must return a malkusch\\bav\\Configuration\\Configuration object."
+                    "$resolvedPath must return a rotdrop\\bav\\Configuration\\Configuration object."
                 );
 
             }

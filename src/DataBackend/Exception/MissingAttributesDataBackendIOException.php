@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bav\DataBackend\Exception;
+namespace rotdrop\bav\DataBackend\Exception;
 
 /**
  * Copyright (C) 2006  Markus Malkusch <markus@malkusch.de>

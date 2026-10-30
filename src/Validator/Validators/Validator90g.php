@@ -1,9 +1,9 @@
 <?php
 
-namespace malkusch\bav\Validator\Validators;
+namespace rotdrop\bav\Validator\Validators;
 
-use malkusch\bav\Bank\Bank;
-use malkusch\bav\Validator\WeightedIterationValidator;
+use rotdrop\bav\Bank\Bank;
+use rotdrop\bav\Validator\WeightedIterationValidator;
 
 /**
  * Implements 90g
@@ -35,7 +35,7 @@ class Validator90g extends WeightedIterationValidator
 
         /*
          * The specification is not clear about 4 or 3.
-         * see https://github.com/malkusch/bav/issues/14
+         * see https://github.com/rotdrop/bav/issues/14
          */
         $this->setEnd(3);
     }

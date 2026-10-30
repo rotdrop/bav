@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bav\Validator;
+namespace rotdrop\bav\Validator;
 
 /**
  * Copyright (C) 2006  Markus Malkusch <markus@malkusch.de>

@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav\DataBackend\Update;
+namespace rotdrop\bav\DataBackend\Update;
 
-use malkusch\bav\DataBackend\DataBackend;
+use rotdrop\bav\DataBackend\DataBackend;
 
 /**
  * Abstract update plan.

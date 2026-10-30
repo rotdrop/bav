@@ -1,10 +1,10 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\DataBackend\Orm\Doctrine\DoctrineBackendContainer;
-use malkusch\bav\DataBackend\Pdo\PDODataBackend;
-use malkusch\bav\DataBackend\SQLDataBackend;
+use rotdrop\bav\DataBackend\Orm\Doctrine\DoctrineBackendContainer;
+use rotdrop\bav\DataBackend\Pdo\PDODataBackend;
+use rotdrop\bav\DataBackend\SQLDataBackend;
 
 require_once __DIR__ . "/../bootstrap.php";
 
@@ -69,7 +69,7 @@ class AgencyQueryTest extends \PHPUnit\Framework\TestCase
     public function testNoID(string $type)
     {
         $backend = $this->createBackend($type);
-        $this->expectException(\malkusch\bav\DataBackend\Exception\MissingAttributesDataBackendIOException::class);
+        $this->expectException(\rotdrop\bav\DataBackend\Exception\MissingAttributesDataBackendIOException::class);
 
         $result = $backend->getAgencies(
             'SELECT name, postcode, city, shortTerm, pan, bic, bank FROM bav_agency LIMIT 1'

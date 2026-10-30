@@ -1,11 +1,11 @@
 <?php
 
-namespace malkusch\bav\DataBackend;
+namespace rotdrop\bav\DataBackend;
 
-use malkusch\bav\Configuration\Configuration;
-use malkusch\bav\Configuration\ConfigurationRegistry;
-use malkusch\bav\DataBackend\Exception\DataBackendException;
-use malkusch\bav\Util\Lock;
+use rotdrop\bav\Configuration\Configuration;
+use rotdrop\bav\Configuration\ConfigurationRegistry;
+use rotdrop\bav\DataBackend\Exception\DataBackendException;
+use rotdrop\bav\Util\Lock;
 
 /**
  * Container for DataBackend objects.

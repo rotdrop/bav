@@ -1,11 +1,11 @@
 <?php
 
-namespace malkusch\bav\Bank;
+namespace rotdrop\bav\Bank;
 
-use malkusch\bav\DataBackend\DataBackend;
-use malkusch\bav\DataBackend\Exception\DataBackendException;
-use malkusch\bav\Validator\Validator;
-use malkusch\bav\Validator\ValidatorFactory;
+use rotdrop\bav\DataBackend\DataBackend;
+use rotdrop\bav\DataBackend\Exception\DataBackendException;
+use rotdrop\bav\Validator\Validator;
+use rotdrop\bav\Validator\ValidatorFactory;
 
 /**
  * A bank can validate a bank account (Bank->isValid(String $account)) and

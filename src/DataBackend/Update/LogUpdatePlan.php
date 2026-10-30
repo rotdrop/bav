@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav\DataBackend\Update;
+namespace rotdrop\bav\DataBackend\Update;
 
-use malkusch\bav\DataBackend\DataBackend;
+use rotdrop\bav\DataBackend\DataBackend;
 
 /**
  * Logs a E_USER_WARNING if an update should be performed.

@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav\DataBackend\File\FileParser\Exception;
+namespace rotdrop\bav\DataBackend\File\FileParser\Exception;
 
-use malkusch\bav\Exception\BAVException;
+use rotdrop\bav\Exception\BAVException;
 
 /**
  * Copyright (C) 2006  Markus Malkusch <markus@malkusch.de>

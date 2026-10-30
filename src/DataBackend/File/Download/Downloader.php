@@ -1,10 +1,10 @@
 <?php
 
-namespace malkusch\bav\DataBackend\File\Download;
+namespace rotdrop\bav\DataBackend\File\Download;
 
-use malkusch\bav\DataBackend\Exception\DataBackendIOException;
-use malkusch\bav\DataBackend\File\Download\Exception\DownloaderException;
-use malkusch\bav\Util\FileUtil;
+use rotdrop\bav\DataBackend\Exception\DataBackendIOException;
+use rotdrop\bav\DataBackend\File\Download\Exception\DownloaderException;
+use rotdrop\bav\Util\FileUtil;
 
 /**
  * Downloads an URI

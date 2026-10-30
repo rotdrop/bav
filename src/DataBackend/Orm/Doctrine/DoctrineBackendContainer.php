@@ -1,9 +1,9 @@
 <?php
 
-namespace malkusch\bav\DataBackend\Orm\Doctrine;
+namespace rotdrop\bav\DataBackend\Orm\Doctrine;
 
-use malkusch\bav\DataBackend\DataBackend;
-use malkusch\bav\DataBackend\DataBackendContainer;
+use rotdrop\bav\DataBackend\DataBackend;
+use rotdrop\bav\DataBackend\DataBackendContainer;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;

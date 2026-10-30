@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bav\Util;
+namespace rotdrop\bav\Util;
 
 /**
  * Helper for BIC

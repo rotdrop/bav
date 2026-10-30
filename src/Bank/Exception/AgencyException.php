@@ -1,9 +1,9 @@
 <?php
 
-namespace malkusch\bav\Bank\Exception;
+namespace rotdrop\bav\Bank\Exception;
 
-use malkusch\bav\Bank\Agency;
-use malkusch\bav\Exception\BAVException;
+use rotdrop\bav\Bank\Agency;
+use rotdrop\bav\Exception\BAVException;
 
 /**
  * Copyright (C) 2006  Markus Malkusch <markus@malkusch.de>

@@ -1,18 +1,18 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Bank\Agency;
-use malkusch\bav\Bank\Bank;
-use malkusch\bav\Configuration\Configuration;
-use malkusch\bav\Configuration\ConfigurationRegistry;
-use malkusch\bav\Configuration\DefaultConfiguration;
-use malkusch\bav\DataBackend\File\FileDataBackend;
-use malkusch\bav\DataBackend\File\FileParser\FileParser;
-use malkusch\bav\DataBackend\Orm\Doctrine\DoctrineBackendContainer;
-use malkusch\bav\DataBackend\Orm\MetaData;
-use malkusch\bav\DataBackend\Update\AutomaticUpdatePlan;
-use malkusch\bav\Validator\ValidatorFactory;
+use rotdrop\bav\Bank\Agency;
+use rotdrop\bav\Bank\Bank;
+use rotdrop\bav\Configuration\Configuration;
+use rotdrop\bav\Configuration\ConfigurationRegistry;
+use rotdrop\bav\Configuration\DefaultConfiguration;
+use rotdrop\bav\DataBackend\File\FileDataBackend;
+use rotdrop\bav\DataBackend\File\FileParser\FileParser;
+use rotdrop\bav\DataBackend\Orm\Doctrine\DoctrineBackendContainer;
+use rotdrop\bav\DataBackend\Orm\MetaData;
+use rotdrop\bav\DataBackend\Update\AutomaticUpdatePlan;
+use rotdrop\bav\Validator\ValidatorFactory;
 
 require_once __DIR__ . "/../../vendor/autoload.php";
 

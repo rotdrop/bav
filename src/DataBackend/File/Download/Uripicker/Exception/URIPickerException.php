@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav\DataBackend\File\Download\Uripicker\Exception;
+namespace rotdrop\bav\DataBackend\File\Download\Uripicker\Exception;
 
-use malkusch\bav\DataBackend\Exception\DataBackendException;
+use rotdrop\bav\DataBackend\Exception\DataBackendException;
 
 /**
  * Exception during URI picking.

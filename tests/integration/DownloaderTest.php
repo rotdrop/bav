@@ -1,8 +1,8 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\DataBackend\File\Download\Downloader;
+use rotdrop\bav\DataBackend\File\Download\Downloader;
 
 require_once __DIR__ . "/../bootstrap.php";
 
@@ -89,7 +89,7 @@ class DownloaderTest extends \PHPUnit\Framework\TestCase
      */
     public function testFailDownloadContent()
     {
-        $this->expectException(\malkusch\bav\DataBackend\File\Download\Exception\DownloaderException::class);
+        $this->expectException(\rotdrop\bav\DataBackend\File\Download\Exception\DownloaderException::class);
 
         $downloader = new Downloader();
         $downloader->downloadContent("http://example.org/XXX");
@@ -102,7 +102,7 @@ class DownloaderTest extends \PHPUnit\Framework\TestCase
      */
     public function testFailDownloadFile()
     {
-        $this->expectException(\malkusch\bav\DataBackend\File\Download\Exception\DownloaderException::class);
+        $this->expectException(\rotdrop\bav\DataBackend\File\Download\Exception\DownloaderException::class);
 
         $downloader = new Downloader();
         $file = $downloader->downloadFile("http://example.org/XXX");

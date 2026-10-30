@@ -1,9 +1,9 @@
 <?php
 
-namespace malkusch\bav\DataBackend\Exception;
+namespace rotdrop\bav\DataBackend\Exception;
 
-use malkusch\bav\Exception\BAVException;
-use malkusch\bav\Validator\ContextValidation;
+use rotdrop\bav\Exception\BAVException;
+use rotdrop\bav\Validator\ContextValidation;
 
 /**
  * Missing context during context validation

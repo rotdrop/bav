@@ -8,11 +8,11 @@
  * @see DataBackend
  */
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Configuration\ConfigurationRegistry;
-use malkusch\bav\DataBackend\DataBackend;
-use malkusch\bav\DataBackend\Exception\DataBackendException;
+use rotdrop\bav\Configuration\ConfigurationRegistry;
+use rotdrop\bav\DataBackend\DataBackend;
+use rotdrop\bav\DataBackend\Exception\DataBackendException;
 
 require_once $_composer_autoload_path
     ?? (is_file(__DIR__ . "/../vendor/autoload.php")

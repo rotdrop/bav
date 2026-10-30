@@ -1,19 +1,19 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Bank\Agency;
-use malkusch\bav\Bank\Bank;
-use malkusch\bav\Configuration\Configuration;
-use malkusch\bav\Configuration\ConfigurationRegistry;
-use malkusch\bav\Configuration\DefaultConfiguration;
-use malkusch\bav\DataBackend\DataBackend;
-use malkusch\bav\DataBackend\Exception\BankNotFoundException;
-use malkusch\bav\DataBackend\Exception\DataBackendException;
-use malkusch\bav\DataBackend\Exception\InvalidContextException;
-use malkusch\bav\DataBackend\Update\AutomaticUpdatePlan;
-use malkusch\bav\Util\BICUtil;
-use malkusch\bav\Validator\ContextValidation;
+use rotdrop\bav\Bank\Agency;
+use rotdrop\bav\Bank\Bank;
+use rotdrop\bav\Configuration\Configuration;
+use rotdrop\bav\Configuration\ConfigurationRegistry;
+use rotdrop\bav\Configuration\DefaultConfiguration;
+use rotdrop\bav\DataBackend\DataBackend;
+use rotdrop\bav\DataBackend\Exception\BankNotFoundException;
+use rotdrop\bav\DataBackend\Exception\DataBackendException;
+use rotdrop\bav\DataBackend\Exception\InvalidContextException;
+use rotdrop\bav\DataBackend\Update\AutomaticUpdatePlan;
+use rotdrop\bav\Util\BICUtil;
+use rotdrop\bav\Validator\ContextValidation;
 
 /**
  * Facade for BAV's API.

@@ -1,6 +1,6 @@
 <?php
 
-namespace malkusch\bav\Validator;
+namespace rotdrop\bav\Validator;
 
 /**
  * This class offers support for algorithmns which uses more algorithmns

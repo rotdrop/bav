@@ -1,13 +1,13 @@
 <?php
 
-namespace malkusch\bav;
+namespace rotdrop\bav;
 
-use malkusch\bav\Bank\Bank;
-use malkusch\bav\DataBackend\DataBackend;
-use malkusch\bav\DataBackend\File\FileDataBackend;
-use malkusch\bav\DataBackend\File\FileParser\Exception\FileParserIOException;
-use malkusch\bav\DataBackend\File\FileParser\Exception\FileParserNotExistsException;
-use malkusch\bav\Validator\Validator;
+use rotdrop\bav\Bank\Bank;
+use rotdrop\bav\DataBackend\DataBackend;
+use rotdrop\bav\DataBackend\File\FileDataBackend;
+use rotdrop\bav\DataBackend\File\FileParser\Exception\FileParserIOException;
+use rotdrop\bav\DataBackend\File\FileParser\Exception\FileParserNotExistsException;
+use rotdrop\bav\Validator\Validator;
 
 require_once __DIR__ . "/../bootstrap.php";
 

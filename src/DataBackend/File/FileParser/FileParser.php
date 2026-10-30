@@ -1,15 +1,15 @@
 <?php
 
-namespace malkusch\bav\DataBackend\File\FileParser;
+namespace rotdrop\bav\DataBackend\File\FileParser;
 
-use malkusch\bav\Bank\Agency;
-use malkusch\bav\Bank\Bank;
-use malkusch\bav\Configuration\ConfigurationRegistry;
-use malkusch\bav\DataBackend\DataBackend;
-use malkusch\bav\DataBackend\File\FileParser\Exception\FileParserIOException;
-use malkusch\bav\DataBackend\File\FileParser\Exception\FileParserNotExistsException;
-use malkusch\bav\DataBackend\File\FileParser\Exception\ParseException;
-use malkusch\bav\Encoding\Encoding;
+use rotdrop\bav\Bank\Agency;
+use rotdrop\bav\Bank\Bank;
+use rotdrop\bav\Configuration\ConfigurationRegistry;
+use rotdrop\bav\DataBackend\DataBackend;
+use rotdrop\bav\DataBackend\File\FileParser\Exception\FileParserIOException;
+use rotdrop\bav\DataBackend\File\FileParser\Exception\FileParserNotExistsException;
+use rotdrop\bav\DataBackend\File\FileParser\Exception\ParseException;
+use rotdrop\bav\Encoding\Encoding;
 
 /**
  * This class is responsable for I/O and formating which helps the FileDataBackend.
