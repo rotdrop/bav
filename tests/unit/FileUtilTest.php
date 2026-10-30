@@ -59,13 +59,16 @@ class FileUtilTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Tests getting /tmp.
-     * 
+     * Tests preferring the system temporary directory.
      */
-    #[\PHPUnit\Framework\Attributes\RequiresOperatingSystem("Linux")]
-    public function testLinuxTempDirectory()
+    public function testSystemTempDirectory()
     {
-        $fileUtil = new FileUtil();
-        $this->assertEquals("/tmp", $fileUtil->getTempDirectory());
+        $directory = sys_get_temp_dir();
+        if (! is_writable($directory)) {
+            $this->markTestSkipped("The system temporary directory is not writable.");
+        }
+
+        $fileUtil = new FileUtil(new DefaultConfiguration());
+        $this->assertSame(realpath($directory), $fileUtil->getTempDirectory());
     }
 }
