@@ -6,7 +6,6 @@ use malkusch\bav\DataBackend\File\Download\Uripicker\DOMURIPicker;
 use malkusch\bav\DataBackend\File\Download\Uripicker\FallbackURIPicker;
 use malkusch\bav\DataBackend\File\Download\Uripicker\RegExpURIPicker;
 use malkusch\bav\DataBackend\File\Download\Uripicker\URIPicker;
-use malkusch\bav\DataBackend\File\FileDataBackend;
 
 require_once __DIR__ . "/../bootstrap.php";
 
@@ -16,7 +15,7 @@ require_once __DIR__ . "/../bootstrap.php";
  * @license WTFPL
  * @author Markus Malkusch <markus@malkusch.de>
  */
-class URIPickerTest extends \PHPUnit_Framework_TestCase
+class URIPickerTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -24,7 +23,7 @@ class URIPickerTest extends \PHPUnit_Framework_TestCase
      *
      * @return URIPicker[][]
      */
-    public function provideURIPicker()
+    public static function provideURIPicker()
     {
         return array(
             array(new RegExpURIPicker()),
@@ -36,13 +35,12 @@ class URIPickerTest extends \PHPUnit_Framework_TestCase
     /**
      * All picker return the same result.
      *
-     * @medium
      */
     public function testSameResults()
     {
         $lastResult = null;
-        $html = file_get_contents(FileDataBackend::DOWNLOAD_URI);
-        foreach ($this->provideURIPicker() as $picker) {
+        $html = file_get_contents(__DIR__ . "/../data/bankleitzahlen_download.html");
+        foreach (self::provideURIPicker() as $picker) {
             $picker = $picker[0];
             $result = $picker->pickURI($html);
             if (is_null($lastResult)) {
@@ -58,8 +56,8 @@ class URIPickerTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests pickURI()
      *
-     * @dataProvider provideURIPicker
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideURIPicker")]
     public function testPickURI(URIPicker $picker)
     {
         $html = file_get_contents(__DIR__ . "/../data/bankleitzahlen_download.html");
@@ -76,11 +74,12 @@ class URIPickerTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests pickURI()
      *
-     * @dataProvider provideURIPicker
-     * @expectedException malkusch\bav\DataBackend\File\Download\Uripicker\Exception\URIPickerException
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideURIPicker")]
     public function testFailPickURI(URIPicker $picker)
     {
+        $this->expectException(\malkusch\bav\DataBackend\File\Download\Uripicker\Exception\URIPickerException::class);
+
         $html = "XXX";
         $uri = $picker->pickURI($html);
     }
@@ -88,8 +87,8 @@ class URIPickerTest extends \PHPUnit_Framework_TestCase
     /**
      * All pickers are available on this platform.
      *
-     * @dataProvider provideURIPicker
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideURIPicker")]
     public function testIsAvailable(URIPicker $picker)
     {
         $this->assertTrue($picker->isAvailable());

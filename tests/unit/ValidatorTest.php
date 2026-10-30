@@ -4,7 +4,7 @@ namespace malkusch\bav;
 
 use malkusch\bav\Bank\Bank;
 use malkusch\bav\DataBackend\DataBackend;
-use malkusch\bav\DataBackend\File\FileDataBackendContainer;
+use malkusch\bav\DataBackend\File\FileDataBackend;
 use malkusch\bav\DataBackend\File\FileParser\Exception\FileParserIOException;
 use malkusch\bav\DataBackend\File\FileParser\Exception\FileParserNotExistsException;
 use malkusch\bav\Validator\Validator;
@@ -17,8 +17,9 @@ require_once __DIR__ . "/../bootstrap.php";
  * @author Markus Malkusch <markus@malkusch.de>
  * @license WTFPL
  */
-class ValidatorTest extends \PHPUnit_Framework_TestCase
+class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
+    use UserErrorAssertions;
 
     /**
      * @var DataBackend
@@ -39,16 +40,13 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
      * @throws FileParserIOException
      * @throws FileParserNotExistsException
      */
-    protected function setUp()
+    private static function initializeBackend(): void
     {
         if (! empty(self::$dataBackend)) {
             return;
 
         }
-        $container = new FileDataBackendContainer();
-
-        #self::$dataBackend = new PDODataBackend(PDOFactory::makePDO());
-        self::$dataBackend = $container->getDataBackend();
+        self::$dataBackend = new FileDataBackend(__DIR__ . '/../data/fileParserTest/bb-excerpt.txt');
 
 
         foreach (self::$dataBackend->getAllBanks() as $bank) {
@@ -60,9 +58,9 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
     /**
      * @return Array
      */
-    public function provideBanks()
+    public static function provideBanks()
     {
-        $this->setUp();
+        self::initializeBackend();
 
         $banks = array();
         $files = ClassFile::getClassFiles(__DIR__.'/../../src/Validator/Validators/');
@@ -86,13 +84,13 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
     /**
      * @return Array
      */
-    public function provideAccountsAndBanksInAllLengths()
+    public static function provideAccountsAndBanksInAllLengths()
     {
         $providedAccountsAndBanks = array();
-        foreach ($this->provideBanks() as $bank) {
+        foreach (self::provideBanks() as $bank) {
             $bank = $bank[0];
             for ($length = 0; $length <= 10; $length++) {
-                $providedAccountsAndBanks[] = array($bank, str_repeat(1, $length));
+                $providedAccountsAndBanks[] = array($bank, str_repeat("1", $length));
 
             }
         }
@@ -105,8 +103,8 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
      * @param String $validatorType
      * @throws ClassFileIOException
      * @throws MissingClassException
-     * @dataProvider provideBanks
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideBanks")]
     public function testNullIsInvalid(Bank $bank)
     {
         for ($length = 0; $length <= 10; $length++) {
@@ -125,17 +123,18 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
      * @param int $account
      * @throws ClassFileIOException
      * @throws MissingClassException
-     * @dataProvider provideAccountsAndBanksInAllLengths
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideAccountsAndBanksInAllLengths")]
     public function testAccountLength(Bank $bank, $account)
     {
+        $this->expectNotToPerformAssertions();
         $bank->isValid($account);
     }
 
     /**
      * @return Array
      */
-    public function provideTestAccounts()
+    public static function provideTestAccounts()
     {
         $verifyArray = json_decode(file_get_contents(__DIR__ . '/../data/accounts.json'));
         if (! is_array($verifyArray)) {
@@ -155,18 +154,22 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
      * Validator::isValid() with an int should raise a warning.
      * 
      * @see Validator::isValid()
-     * @dataProvider provideBanks
-     * @expectedException PHPUnit_Framework_Error_Warning
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideBanks")]
     public function testWarningForIsValidWithInt(Bank $bank)
     {
         $intAccount = 0020012357;
-        $bank->isValid($intAccount);
+        $this->assertUserError(
+            E_USER_WARNING,
+            "Only validation of strings are defined."
+                . "Note that e.g. an (int) 0020012357 evaluates to (string) '4199663'.",
+            function () use ($bank, $intAccount) {
+                $bank->isValid($intAccount);
+            }
+        );
     }
 
-    /**
-     * @dataProvider provideTestAccounts
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestAccounts")]
     public function testAccount(\stdClass $testCase)
     {
         if (! empty($testCase->blz)) {

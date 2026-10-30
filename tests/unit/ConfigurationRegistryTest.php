@@ -13,15 +13,24 @@ require_once __DIR__ . "/../bootstrap.php";
  * @licends GPL
  * @see ConfigurationRegistry
  */
-class ConfigurationRegistryTest extends \PHPUnit_Framework_TestCase
+class ConfigurationRegistryTest extends \PHPUnit\Framework\TestCase
 {
+    private $configuration;
+    private $includePath;
+
+    protected function setUp(): void
+    {
+        $this->configuration = ConfigurationRegistry::getConfiguration();
+        $this->includePath = get_include_path();
+    }
     
     /**
      * Disable update hook
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
-        ConfigurationRegistry::getConfiguration()->setUpdatePlan(null);
+        ConfigurationRegistry::setConfiguration($this->configuration);
+        set_include_path($this->includePath);
     }
 
     /**
@@ -39,7 +48,6 @@ class ConfigurationRegistryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf("malkusch\bav\Configuration\Configuration", $configuration);
         $this->assertEquals("test", $configuration->getTempDirectory());
         
-        restore_include_path();
     }
     
     /**

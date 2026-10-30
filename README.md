@@ -5,6 +5,8 @@ BAV (bank account validator) is a validation library for German bank accounts.
 
 # Installation
 
+Requires PHP 8.3 or later.
+
 Use [Composer](https://getcomposer.org/):
 
 ```json
@@ -219,6 +221,56 @@ which uses doctrine
 as data backend.
 
 
+# Development and tests
+
+The test suite uses PHPUnit 12.5 and requires PHP 8.3 or later with the
+`curl`, `dom`, `mbstring`, `pdo_sqlite`, `xml`, and `xmlwriter` extensions.
+The library also requires PHP 8.3 or later; consumers installing without
+development dependencies do not need PHPUnit.
+
+```sh
+composer install
+composer test
+```
+
+The default `unit` suite runs offline, without a database server or downloaded bank
+list. It uses the checked-in account cases and Bundesbank excerpt. To run one
+test or randomize execution order:
+
+```sh
+vendor/bin/phpunit --filter ValidatorTest
+vendor/bin/phpunit --order-by=random
+```
+
+The `integration` suite contains the facade, context, database, download, and
+backend installation tests. It needs network access to the Bundesbank and GNU,
+PDO MySQL and SQLite support, and a **dedicated, disposable MySQL database**.
+These tests install, update, and remove tables and bank data. Prepare the database
+and downloaded `data/banklist.txt` before running them:
+
+```sh
+export PDO_DSN='mysql:host=localhost;dbname=bav_test'
+export PDO_USER='bav_test'
+export PDO_PASSWORD='your-test-database-password'
+php tests/bin/test-install.php
+composer test:integration
+```
+
+The facade and backend tests retain their historical bank and agency
+expectations, which may differ from today's Bundesbank data.
+
+The exhaustive cross-project comparisons are opt-in, require the integration
+environment and the optional Kontocheck extension, and can take days:
+
+```sh
+NODE_NUMBER=0 NODE_COUNT=2 composer test:cross-project
+```
+
+The four unfinished parser tests remain marked incomplete. On PHP 8.4 and later,
+the existing implicitly nullable `FileUtil` constructor also reports a
+deprecation; this is not a PHPUnit API deprecation.
+
+
 # License and authors
 
 This project is free and under the WTFPL. So do what ever you want.
@@ -232,4 +284,4 @@ Björn Wilmsmann. Responsable for this project is Markus Malkusch <markus@malkus
 If you like BAV and feel generous donate a few Bitcoins here:
 [1335STSwu9hST4vcMRppEPgENMHD2r1REK](bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK)
 
-[![Build Status](https://travis-ci.org/bav-php/bav.svg?branch=master)](https://travis-ci.org/bav-php/bav)
+[![Tests](https://github.com/rotdrop/bav/actions/workflows/tests.yml/badge.svg)](https://github.com/rotdrop/bav/actions/workflows/tests.yml)

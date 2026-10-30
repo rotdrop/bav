@@ -9,7 +9,7 @@ require_once __DIR__ . "/../bootstrap.php";
 /**
  * Test if the banklist.txt fits into the model.
  */
-class DataConstraintTest extends \PHPUnit_Framework_TestCase
+class DataConstraintTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -17,7 +17,7 @@ class DataConstraintTest extends \PHPUnit_Framework_TestCase
      */
     private static $pdo;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
 
         self::$pdo = PDOFactory::makePDO();
@@ -46,7 +46,7 @@ class DataConstraintTest extends \PHPUnit_Framework_TestCase
 
         $fp = fopen(__DIR__ . '/../../data/banklist.txt', 'r');
         if (! is_resource($fp)) {
-            throw new RuntimeException('I/O-Error');
+            throw new \RuntimeException('I/O-Error');
 
         }
 
@@ -68,7 +68,7 @@ class DataConstraintTest extends \PHPUnit_Framework_TestCase
 
         while ($line = fgets($fp)) {
             $blz        = substr($line, 0, 8);
-            $isMain     = ($line{8} === '1') ? 1 : 0;
+            $isMain     = ($line[8] === '1') ? 1 : 0;
             $name       = trim(substr($line, 9, 58));
             $plz        = trim(substr($line, 67, 5));
             $city       = trim(substr($line, 72, 35));
@@ -84,32 +84,18 @@ class DataConstraintTest extends \PHPUnit_Framework_TestCase
         fclose($fp);
     }
 
-    /**
-     * @return Array
-     */
-    public function provideParsedLines()
+    public function testParser()
     {
         $parser = new FileParser();
-        $lines  = array();
 
         for ($i = 0; $i < $parser->getLines(); $i++) {
             $line = $parser->readLine($i);
             $blz  = mb_substr($line, 0, 8, 'UTF-8');
             $type = mb_substr($line, FileParser::TYPE_OFFSET, FileParser::TYPE_LENGTH, 'UTF-8');
 
-            $lines[] = array($blz, $type);
+            $this->assertMatchesRegularExpression('~^\d{8}$~', $blz);
+            $this->assertMatchesRegularExpression('~^[\dA-Z]\d$~', $type);
         }
-
-        return $lines;
-    }
-
-    /**
-     * @dataProvider provideParsedLines
-     */
-    public function testParser($blz, $type)
-    {
-        $this->assertRegExp('~^\d{8}$~', $blz);
-        $this->assertRegExp('~^[\dA-Z]\d$~', $type);
     }
 
     /**

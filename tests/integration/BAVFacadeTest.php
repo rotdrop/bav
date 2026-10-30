@@ -13,7 +13,7 @@ require_once __DIR__ . "/../bootstrap.php";
  * @author Markus Malkusch <markus@malkusch.de>
  * @see BAV
  */
-class BAVFacadeTest extends \PHPUnit_Framework_TestCase
+class BAVFacadeTest extends \PHPUnit\Framework\TestCase
 {
     
     /**
@@ -31,11 +31,12 @@ class BAVFacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests BAV::getBank();
      *
-     * @expectedException malkusch\bav\DataBackend\Exception\BankNotFoundException
      * @see BAV::getBank();
      */
     public function testFailGetBank()
     {
+        $this->expectException(\malkusch\bav\DataBackend\Exception\BankNotFoundException::class);
+
         $bav = new BAV();
         $bav->getBank("12345678");
     }
@@ -43,11 +44,12 @@ class BAVFacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests BAV::getAgencies();
      *
-     * @expectedException malkusch\bav\DataBackend\Exception\BankNotFoundException
      * @see BAV::getAgencies();
      */
     public function testFailGetAgencies()
     {
+        $this->expectException(\malkusch\bav\DataBackend\Exception\BankNotFoundException::class);
+
         $bav = new BAV();
         $bav->getAgencies("12345678");
     }
@@ -58,7 +60,7 @@ class BAVFacadeTest extends \PHPUnit_Framework_TestCase
      * @return array
      * @see testGetAgencies()
      */
-    public function provideTestGetAgencies()
+    public static function provideTestGetAgencies()
     {
         return array(
             array("73362500", 0),
@@ -70,9 +72,9 @@ class BAVFacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests BAV::getAgencies();
      *
-     * @dataProvider provideTestGetAgencies
      * @see BAV::getAgencies();
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestGetAgencies")]
     public function testGetAgencies($bankID, $count)
     {
         $bav = new BAV();
@@ -95,11 +97,12 @@ class BAVFacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests BAV::getMainAgency();
      *
-     * @expectedException malkusch\bav\DataBackend\Exception\BankNotFoundException
      * @see BAV::getMainAgency();
      */
     public function testFailGetMainAgency()
     {
+        $this->expectException(\malkusch\bav\DataBackend\Exception\BankNotFoundException::class);
+
         $bav = new BAV();
         $bav->getMainAgency("12345678");
     }
@@ -110,7 +113,7 @@ class BAVFacadeTest extends \PHPUnit_Framework_TestCase
      * @see testBankExists()
      * @return array
      */
-    public function provideTestIsValidBank()
+    public static function provideTestIsValidBank()
     {
         return array(
             array("73362500", true),
@@ -121,9 +124,9 @@ class BAVFacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests BAV::isValidBank();
      *
-     * @dataProvider provideTestIsValidBank
      * @see BAV::isValidBank();
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestIsValidBank")]
     public function testIsValidBank($bankID, $expected)
     {
         $bav = new BAV();
@@ -136,7 +139,7 @@ class BAVFacadeTest extends \PHPUnit_Framework_TestCase
      * @see testIsValidBankAccount()
      * @return array
      */
-    public function provideTestIsValidBankAccount()
+    public static function provideTestIsValidBankAccount()
     {
         return array(
             array("73362500", "0110030005", false),
@@ -147,9 +150,9 @@ class BAVFacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests BAV::isValidBankAccount();
      *
-     * @dataProvider provideTestIsValidBankAccount
      * @see BAV::isValidBankAccount();
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestIsValidBankAccount")]
     public function testIsValidBankAccount($bankID, $account, $expected)
     {
         $bav = new BAV();
@@ -162,7 +165,7 @@ class BAVFacadeTest extends \PHPUnit_Framework_TestCase
      * @see testIsValidBIC()
      * @return array
      */
-    public function provideTestIsValidBIC()
+    public static function provideTestIsValidBIC()
     {
         return array(
             array("VZVDDED1XXX", true),
@@ -174,9 +177,9 @@ class BAVFacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests BAV::isValidBankAccount();
      *
-     * @dataProvider provideTestIsValidBIC
      * @see BAV::isValidBIC();
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestIsValidBIC")]
     public function testIsValidBIC($bic, $expected)
     {
         $bav = new BAV();
@@ -189,7 +192,7 @@ class BAVFacadeTest extends \PHPUnit_Framework_TestCase
      * @see testGetBICAgencies()
      * @return array
      */
-    public function provideTestGetBICAgencies()
+    public static function provideTestGetBICAgencies()
     {
         return array(
             array("VZVDDED1XXX", array("52944")),
@@ -201,9 +204,9 @@ class BAVFacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests BAV::getBICAgencies();
      *
-     * @dataProvider provideTestGetBICAgencies
      * @see BAV::getBICAgencies();
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestGetBICAgencies")]
     public function testGetBICAgencies($bic, $expected)
     {
         $bav = new BAV();
@@ -264,9 +267,9 @@ class BAVFacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests BAV::isValidAccount();
      *
-     * @dataProvider provideTestIsValidBankAccount
      * @see BAV::isValidAccount();
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestIsValidBankAccount")]
     public function testValidAccount($bankID, $account, $expected)
     {
         $bav = new BAV();

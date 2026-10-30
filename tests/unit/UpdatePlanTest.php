@@ -2,6 +2,7 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\DataBackend\DataBackend;
 use malkusch\bav\DataBackend\File\FileDataBackend;
 use malkusch\bav\DataBackend\Update\AutomaticUpdatePlan;
 use malkusch\bav\DataBackend\Update\LogUpdatePlan;
@@ -13,22 +14,30 @@ require_once __DIR__ . "/../bootstrap.php";
 /**
  * Tests UpdatePlan
  *
- * This dates uses a mock for time(). Therefore this test must run before
- * any unmocked call to time().
- *
  * @see TimeMock
  * @license WTFPL
  * @author Markus Malkusch <markus@malkusch.de>
  */
-class UpdatePlanTest extends \PHPUnit_Framework_TestCase
+class UpdatePlanTest extends \PHPUnit\Framework\TestCase
 {
+    use UserErrorAssertions;
+
+    private $file;
+
+    protected function tearDown(): void
+    {
+        TimeMock::disable();
+        if ($this->file !== null) {
+            unlink($this->file);
+        }
+    }
 
     /**
      * Provide test cases for testIsOutdated()
      * 
      * @see testIsOutdated()
      */
-    public function provideTestIsOutdated()
+    public static function provideTestIsOutdated()
     {
         return array(
             array("2012-11-01", "2013-01-31", false),
@@ -49,16 +58,16 @@ class UpdatePlanTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests isOutdated()
      * 
-     * @dataProvider provideTestIsOutdated
      * @param string $mtime file time
      * @param string $time current time
      * @param bool $expectedIsOutdated
      * @see UpdatePlan::isOutdated()
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestIsOutdated")]
     public function testIsOutdated($mtime, $time, $expectedIsOutdated)
     {
         $fileUtil = new FileUtil();
-        $file = tempnam($fileUtil->getTempDirectory(), 'bavtest');
+        $file = $this->file = tempnam($fileUtil->getTempDirectory(), 'bavtest');
         touch($file, strtotime($mtime));
         $backend = new FileDataBackend($file);
 
@@ -70,42 +79,57 @@ class UpdatePlanTest extends \PHPUnit_Framework_TestCase
         TimeMock::disable();
     }
 
-    /**
-     * @expectedException \PHPUnit_Framework_Error_Warning
-     */
     public function testLogUpdatePlan()
     {
         $updatePlan = new LogUpdatePlan();
-        $updatePlan->perform(new FileDataBackend());
+        $backend = $this->createStub(DataBackend::class);
+        $this->assertUserError(
+            E_USER_WARNING,
+            "bav's bank data is outdated. Update the data with e.g. bin/bav-update.php",
+            function () use ($updatePlan, $backend) {
+                $updatePlan->perform($backend);
+            }
+        );
     }
 
-    /**
-     * @expectedException \PHPUnit_Framework_Error_Notice
-     * @medium
-     */
     public function testAutomaticUpdatePlanNotice()
     {
-        $fileUtil = new FileUtil();
-        $file = tempnam($fileUtil->getTempDirectory(), 'bavtest');
+        $backend = $this->createMock(DataBackend::class);
+        $backend->expects($this->once())->method('update');
         $updatePlan = new AutomaticUpdatePlan();
-        $updatePlan->perform(new FileDataBackend($file));
+        $this->assertUserError(
+            E_USER_NOTICE,
+            "bav's bank data was updated sucessfully.",
+            function () use ($updatePlan, $backend) {
+                $updatePlan->perform($backend);
+            }
+        );
     }
 
-    /**
-     * @expectedException \PHPUnit_Framework_Error_Notice
-     * @medium
-     */
     public function testAutomaticUpdatePlan()
     {
         $fileUtil = new FileUtil();
-        $file = tempnam($fileUtil->getTempDirectory(), 'bavtest');
+        $file = $this->file = tempnam($fileUtil->getTempDirectory(), 'bavtest');
         touch($file, strtotime("-1 year"));
-        $backend = new FileDataBackend($file);
+        $backend = $this->getMockBuilder(FileDataBackend::class)
+            ->setConstructorArgs(array($file))
+            ->onlyMethods(array('update'))
+            ->getMock();
+        $backend->expects($this->once())->method('update')->willReturnCallback(function () use ($file) {
+            touch($file);
+            clearstatcache(true, $file);
+        });
 
         $updatePlan = new AutomaticUpdatePlan();
         $this->assertTrue($updatePlan->isOutdated($backend));
 
-        $updatePlan->perform($backend);
+        $this->assertUserError(
+            E_USER_NOTICE,
+            "bav's bank data was updated sucessfully.",
+            function () use ($updatePlan, $backend) {
+                $updatePlan->perform($backend);
+            }
+        );
         $this->assertFalse($updatePlan->isOutdated($backend));
     }
 }

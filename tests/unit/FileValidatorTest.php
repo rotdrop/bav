@@ -2,7 +2,6 @@
 
 namespace malkusch\bav;
 
-use malkusch\bav\DataBackend\File\FileDataBackend;
 use malkusch\bav\DataBackend\File\Validator\FileValidator;
 
 require_once __DIR__ . "/../bootstrap.php";
@@ -14,76 +13,83 @@ require_once __DIR__ . "/../bootstrap.php";
  * @author Markus Malkusch <markus@malkusch.de>
  * @see BAV
  */
-class FileValidatorTest extends \PHPUnit_Framework_TestCase
+class FileValidatorTest extends \PHPUnit\Framework\TestCase
 {
+    private $file;
+    private $invalidFile;
+
+    protected function setUp(): void
+    {
+        $line = file(__DIR__ . '/../data/fileParserTest/bb-excerpt.txt')[0];
+        $this->file = tempnam(sys_get_temp_dir(), 'bavtest');
+        $this->invalidFile = tempnam(sys_get_temp_dir(), 'bavtest');
+        file_put_contents(
+            $this->file,
+            str_repeat($line, (int) ceil(FileValidator::FILESIZE / strlen($line)))
+        );
+    }
+
+    protected function tearDown(): void
+    {
+        unlink($this->file);
+        unlink($this->invalidFile);
+    }
 
     public function testValidate()
     {
-        $backend = new FileDataBackend();
-        $file = $backend->getFile();
-
+        $this->expectNotToPerformAssertions();
         $validator = new FileValidator();
-        $validator->validate($file);
+        $validator->validate($this->file);
     }
 
-    /**
-     * @expectedException malkusch\bav\DataBackend\File\Validator\Exception\InvalidFilesizeException
-     */
     public function testInvalidFileSize()
     {
+        $this->expectException(\malkusch\bav\DataBackend\File\Validator\Exception\InvalidFilesizeException::class);
+
         $validator = new FileValidator();
         $validator->validate(__FILE__);
     }
 
-    /**
-     * @expectedException malkusch\bav\DataBackend\File\Validator\Exception\InvalidLineLengthException
-     */
     public function testInvalidLineLength()
     {
-        $backend = new FileDataBackend();
-        $file = $backend->getFile();
+        $this->expectException(\malkusch\bav\DataBackend\File\Validator\Exception\InvalidLineLengthException::class);
 
-        $invalidFile = __DIR__ . "/../data/invalidLength.txt";
-        copy($file, $invalidFile);
+        $invalidFile = $this->invalidFile;
+        copy($this->file, $invalidFile);
 
         $fp = fopen($invalidFile, "c");
         fputs($fp, "invalid line\n");
+        fclose($fp);
 
         $validator = new FileValidator();
         $validator->validate($invalidFile);
     }
 
-    /**
-     * @expectedException malkusch\bav\DataBackend\File\Validator\Exception\InvalidLineLengthException
-     */
     public function testNotConstantLineLength()
     {
-        $backend = new FileDataBackend();
-        $file = $backend->getFile();
+        $this->expectException(\malkusch\bav\DataBackend\File\Validator\Exception\InvalidLineLengthException::class);
 
-        $invalidFile = __DIR__ . "/../data/notConstantLength.txt";
-        copy($file, $invalidFile);
+        $invalidFile = $this->invalidFile;
+        copy($this->file, $invalidFile);
 
         $fp = fopen($invalidFile, "a");
         fputs($fp, "X\n");
+        fclose($fp);
 
         $validator = new FileValidator();
         $validator->validate($invalidFile);
     }
 
-    /**
-     * @expectedException malkusch\bav\DataBackend\File\Validator\Exception\FieldException
-     */
     public function testInvalidFirstLineContent()
     {
-        $backend = new FileDataBackend();
-        $file = $backend->getFile();
+        $this->expectException(\malkusch\bav\DataBackend\File\Validator\Exception\FieldException::class);
 
-        $invalidFile = __DIR__ . "/../data/invalidFirstLineContent.txt";
-        copy($file, $invalidFile);
+        $invalidFile = $this->invalidFile;
+        copy($this->file, $invalidFile);
 
         $fp = fopen($invalidFile, "c");
         fputs($fp, "XXX");
+        fclose($fp);
 
         $validator = new FileValidator();
         $validator->validate($invalidFile);

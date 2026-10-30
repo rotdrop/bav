@@ -12,7 +12,7 @@ require_once __DIR__ . "/../bootstrap.php";
  * @license WTFPL
  * @author Markus Malkusch <markus@malkusch.de>
  */
-class DownloaderTest extends \PHPUnit_Framework_TestCase
+class DownloaderTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -20,7 +20,7 @@ class DownloaderTest extends \PHPUnit_Framework_TestCase
      *
      * @return String[][]
      */
-    public function provideTestURIs()
+    public static function provideTestURIs()
     {
         return array(
             array("http://www.gnu.org/licenses/gpl-2.0.txt", "b234ee4d69f5fce4486a80fdaf4a4263")
@@ -32,9 +32,9 @@ class DownloaderTest extends \PHPUnit_Framework_TestCase
      * 
      * @param string $uri URI
      * @param string $md5 expected MD5 sum
-     * @dataProvider provideTestURIs
      * @see Downloader::downloadContent()
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestURIs")]
     public function testDownloadContent($uri, $md5)
     {
         $downloader = new Downloader();
@@ -47,9 +47,9 @@ class DownloaderTest extends \PHPUnit_Framework_TestCase
      * 
      * @param string $uri URI
      * @param string $md5 expected MD5 sum
-     * @dataProvider provideTestURIs
      * @see Downloader::downloadFile()
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestURIs")]
     public function testDownloadFile($uri, $md5)
     {
         $downloader = new Downloader();
@@ -63,10 +63,10 @@ class DownloaderTest extends \PHPUnit_Framework_TestCase
      * 
      * @param string $uri URI
      * @param string $md5 expected MD5 sum
-     * @dataProvider provideTestURIs
      * @see Downloader::downloadFile()
      * @see Downloader::downloadContent()
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestURIs")]
     public function testDownloadSequence($uri, $md5)
     {
         $downloader = new Downloader();
@@ -85,11 +85,12 @@ class DownloaderTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests failing downloadContent();
      * 
-     * @expectedException malkusch\bav\DataBackend\File\Download\Exception\DownloaderException
      * @see Downloader::downloadContent()
      */
     public function testFailDownloadContent()
     {
+        $this->expectException(\malkusch\bav\DataBackend\File\Download\Exception\DownloaderException::class);
+
         $downloader = new Downloader();
         $downloader->downloadContent("http://example.org/XXX");
     }
@@ -97,11 +98,12 @@ class DownloaderTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests failing downloadFile();
      * 
-     * @expectedException malkusch\bav\DataBackend\File\Download\Exception\DownloaderException
      * @see Downloader::downloadFile()
      */
     public function testFailDownloadFile()
     {
+        $this->expectException(\malkusch\bav\DataBackend\File\Download\Exception\DownloaderException::class);
+
         $downloader = new Downloader();
         $file = $downloader->downloadFile("http://example.org/XXX");
     }

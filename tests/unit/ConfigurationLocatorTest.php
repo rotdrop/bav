@@ -13,8 +13,19 @@ require_once __DIR__ . "/../bootstrap.php";
  * @licends GPL
  * @see ConfigurationLocator
  */
-class ConfigurationLocatorTest extends \PHPUnit_Framework_TestCase
+class ConfigurationLocatorTest extends \PHPUnit\Framework\TestCase
 {
+    private $includePath;
+
+    protected function setUp(): void
+    {
+        $this->includePath = get_include_path();
+    }
+
+    protected function tearDown(): void
+    {
+        set_include_path($this->includePath);
+    }
     
     /**
      * locate() should return null
@@ -31,10 +42,11 @@ class ConfigurationLocatorTest extends \PHPUnit_Framework_TestCase
      * locate() should throw an exception
      * 
      * @see ConfigurationLocator::locate();
-     * @expectedException malkusch\bav\Configuration\ConfigurationException
      */
     public function testlocateThrowsException()
     {
+        $this->expectException(\malkusch\bav\Configuration\ConfigurationException::class);
+
         $locator = new ConfigurationLocator(array(
             __DIR__ . "/../data/no_configuration.php"
         ));
@@ -45,9 +57,9 @@ class ConfigurationLocatorTest extends \PHPUnit_Framework_TestCase
      * locate() should find absolute paths
      * 
      * @param string[] $paths
-     * @dataProvider provideTestLocateFindsAbsolutePath
      * @see ConfigurationLocator::locate();
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestLocateFindsAbsolutePath")]
     public function testLocateFindsAbsolutePath(array $paths)
     {
         $locator = new ConfigurationLocator($paths);
@@ -63,7 +75,7 @@ class ConfigurationLocatorTest extends \PHPUnit_Framework_TestCase
      * @return string[][][]
      * @see testLocateFindsAbsolutePath()
      */
-    public function provideTestLocateFindsAbsolutePath()
+    public static function provideTestLocateFindsAbsolutePath()
     {
         $existingPath = __DIR__ . "/../data/configuration.php";
         $notExistingPath = __DIR__ . "/../data/noop.php";
@@ -79,9 +91,9 @@ class ConfigurationLocatorTest extends \PHPUnit_Framework_TestCase
      * locate() should find paths from the include path
      * 
      * @param string[] $paths
-     * @dataProvider provideTestLocateFindsIncludePath
      * @see ConfigurationLocator::locate();
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestLocateFindsIncludePath")]
     public function testLocateFindsIncludePath($includePath, array $paths)
     {
         set_include_path(get_include_path() . PATH_SEPARATOR . $includePath);
@@ -92,7 +104,6 @@ class ConfigurationLocatorTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf("malkusch\bav\Configuration\Configuration", $configuration);
         $this->assertEquals("test", $configuration->getTempDirectory());
         
-        restore_include_path();
     }
     
     /**
@@ -101,7 +112,7 @@ class ConfigurationLocatorTest extends \PHPUnit_Framework_TestCase
      * @return string[][][]
      * @see testLocateFindsIncludePath()
      */
-    public function provideTestLocateFindsIncludePath()
+    public static function provideTestLocateFindsIncludePath()
     {
         $existingPath = "configuration.php";
         $notExistingPath = "noop.php";

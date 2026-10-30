@@ -14,7 +14,7 @@ require_once __DIR__ . "/../bootstrap.php";
  * @license WTFPL
  * @see ValidatorFactory
  */
-class ValidatorFactoryTest extends \PHPUnit_Framework_TestCase
+class ValidatorFactoryTest extends \PHPUnit\Framework\TestCase
 {
     
     /**
@@ -22,7 +22,7 @@ class ValidatorFactoryTest extends \PHPUnit_Framework_TestCase
      */
     private $factory;
     
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->factory = new ValidatorFactory();
     }
@@ -32,12 +32,12 @@ class ValidatorFactoryTest extends \PHPUnit_Framework_TestCase
      * 
      * @param string $type Validation type
      * @see ValidatorFactory::build()
-     * @dataProvider provideTestBuild
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestBuild")]
     public function testBuild($type)
     {
-        $bav = new BAV();
-        $bank = new Bank($bav->getDataBackend(), null, $type);
+        $backend = $this->createStub(\malkusch\bav\DataBackend\DataBackend::class);
+        $bank = new Bank($backend, null, $type);
         
         $validator = $this->factory->build($bank);
         $this->assertInstanceOf("\\malkusch\\bav\\Validator\\Validators\\Validator$type", $validator);
@@ -49,7 +49,7 @@ class ValidatorFactoryTest extends \PHPUnit_Framework_TestCase
      * @return string[][]
      * @see testBuild()
      */
-    public function provideTestBuild()
+    public static function provideTestBuild()
     {
         $cases = array();
         

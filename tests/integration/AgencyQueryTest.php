@@ -14,64 +14,63 @@ require_once __DIR__ . "/../bootstrap.php";
  * @author Markus Malkusch <markus@malkusch.de>
  * @licends GPL
  */
-class AgencyQueryTest extends \PHPUnit_Framework_TestCase
+class AgencyQueryTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
-     * @return SQLDataBackend[][]
+     * @return string[][]
      */
-    public function provideBackends()
+    public static function provideBackends()
     {
-        $conn = array(
-            "pdo" => PDOFactory::makePDO(),
-        );
-        $doctrineContainer = DoctrineBackendContainer::buildByConnection($conn, true);
-        
-        return array(
-            array(new PDODataBackend(PDOFactory::makePDO())),
-            array($doctrineContainer->getDataBackend())
-        );
+        return array(array('pdo'), array('doctrine'));
     }
 
-    /**
-     * @dataProvider provideBackends
-     */
-    public function testOnlyID(SQLDataBackend $backend)
+    private function createBackend(string $type): SQLDataBackend
     {
+        if ($type === 'pdo') {
+            return new PDODataBackend(PDOFactory::makePDO());
+        }
+
+        $container = DoctrineBackendContainer::buildByConnection(array('pdo' => PDOFactory::makePDO()), true);
+        return $container->getDataBackend();
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideBackends")]
+    public function testOnlyID(string $type)
+    {
+        $backend = $this->createBackend($type);
         $agencies = $backend->getAgencies(
             'SELECT id FROM bav_agency LIMIT 100'
         );
         $this->assertAgencies($agencies, 100);
     }
 
-    /**
-     * @dataProvider provideBackends
-     */
-    public function testIDAndBank(SQLDataBackend $backend)
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideBackends")]
+    public function testIDAndBank(string $type)
     {
+        $backend = $this->createBackend($type);
         $agencies = $backend->getAgencies(
             'SELECT id, bank FROM bav_agency LIMIT 100'
         );
         $this->assertAgencies($agencies, 100);
     }
 
-    /**
-     * @dataProvider provideBackends
-     */
-    public function testNoBank(SQLDataBackend $backend)
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideBackends")]
+    public function testNoBank(string $type)
     {
+        $backend = $this->createBackend($type);
         $agencies = $backend->getAgencies(
             'SELECT id, name, postcode, city, shortTerm, pan, bic FROM bav_agency LIMIT 100'
         );
         $this->assertAgencies($agencies, 100);
     }
 
-    /**
-     * @dataProvider provideBackends
-     * @expectedException malkusch\bav\DataBackend\Exception\MissingAttributesDataBackendIOException
-     */
-    public function testNoID(SQLDataBackend $backend)
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideBackends")]
+    public function testNoID(string $type)
     {
+        $backend = $this->createBackend($type);
+        $this->expectException(\malkusch\bav\DataBackend\Exception\MissingAttributesDataBackendIOException::class);
+
         $result = $backend->getAgencies(
             'SELECT name, postcode, city, shortTerm, pan, bic, bank FROM bav_agency LIMIT 1'
         );

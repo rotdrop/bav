@@ -14,7 +14,7 @@ require_once __DIR__ . "/../bootstrap.php";
  * @author Markus Malkusch <markus@malkusch.de>
  * @license WTFPL
  */
-class FileUtilTest extends \PHPUnit_Framework_TestCase
+class FileUtilTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -40,7 +40,7 @@ class FileUtilTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetConfiguredTempDirectory()
     {
-        $directory = "/root";
+        $directory = sys_get_temp_dir();
         
         $configuration = new DefaultConfiguration();
         $configuration->setTempDirectory($directory);
@@ -61,8 +61,8 @@ class FileUtilTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests getting /tmp.
      * 
-     * @requires OS Linux
      */
+    #[\PHPUnit\Framework\Attributes\RequiresOperatingSystem("Linux")]
     public function testLinuxTempDirectory()
     {
         $fileUtil = new FileUtil();

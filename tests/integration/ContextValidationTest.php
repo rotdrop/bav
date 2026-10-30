@@ -13,7 +13,7 @@ require_once __DIR__ . "/../bootstrap.php";
  * @see ContextValidation
  * @author Markus Malkusch <markus@malkusch.de>
  */
-class ContextValidationTest extends \PHPUnit_Framework_TestCase
+class ContextValidationTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -21,7 +21,7 @@ class ContextValidationTest extends \PHPUnit_Framework_TestCase
      */
     private $validation;
     
-    protected function setUp()
+    protected function setUp(): void
     {
         $bav = new BAV();
         $this->validation = new ContextValidation($bav->getDataBackend());
@@ -121,10 +121,11 @@ class ContextValidationTest extends \PHPUnit_Framework_TestCase
      * Test an invalid context
      * 
      * @see ContextValidation::getValidAccountFilterCallback()
-     * @expectedException malkusch\bav\DataBackend\Exception\InvalidContextException
      */
     public function testFilterInvalidContext()
     {
+        $this->expectException(\malkusch\bav\DataBackend\Exception\InvalidContextException::class);
+
         filter_var(
             "0",
             FILTER_CALLBACK,
@@ -136,10 +137,11 @@ class ContextValidationTest extends \PHPUnit_Framework_TestCase
      * Test an invalid context
      * 
      * @see ContextValidation::isValidAccount()
-     * @expectedException malkusch\bav\DataBackend\Exception\InvalidContextException
      */
     public function testInvalidContext()
     {
+        $this->expectException(\malkusch\bav\DataBackend\Exception\InvalidContextException::class);
+
         $this->validation->isValidAccount("12345");
     }
 }
