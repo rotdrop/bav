@@ -10,7 +10,10 @@
 
 namespace malkusch\bav;
 
-require_once __DIR__ . "/../autoloader/autoloader.php";
+require_once $_composer_autoload_path
+    ?? (is_file(__DIR__ . "/../vendor/autoload.php")
+        ? __DIR__ . "/../vendor/autoload.php"
+        : __DIR__ . "/../../../autoload.php");
 
 try {
     ConfigurationRegistry::getConfiguration()->setAutomaticInstallation(false);

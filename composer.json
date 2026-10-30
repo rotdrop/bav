@@ -27,7 +27,14 @@
         }
     ],
     "autoload": {
-        "files": ["autoloader/autoloader.php"]
+        "psr-4": {
+            "malkusch\\bav\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "malkusch\\bav\\": "tests/classes/"
+        }
     },
     "require": {
         "php": ">=7.4",

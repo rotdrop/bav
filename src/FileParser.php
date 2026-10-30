@@ -99,13 +99,7 @@ class FileParser
      */
     public function __construct($file = null)
     {
-        $defaultFile =
-            __DIR__ . DIRECTORY_SEPARATOR . ".."
-            . DIRECTORY_SEPARATOR . ".."
-            . DIRECTORY_SEPARATOR . ".."
-            . DIRECTORY_SEPARATOR . ".."
-            . DIRECTORY_SEPARATOR . "data"
-            . DIRECTORY_SEPARATOR . "banklist.txt";
+        $defaultFile = __DIR__ . "/../data/banklist.txt";
 
         $this->file = is_null($file) ? $defaultFile: $file;
 

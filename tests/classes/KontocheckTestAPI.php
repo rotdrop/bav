@@ -31,7 +31,7 @@ class KontocheckTestAPI extends TestAPI
         $this->setName("kc");
 
         if (is_null($lutFile)) {
-            $lutFile = __DIR__ . "/../../data/blz.lut2";
+            $lutFile = __DIR__ . "/../data/blz.lut2";
 
         }
 

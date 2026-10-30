@@ -35,7 +35,7 @@ namespace malkusch\bav;
 class ConfigurationRegistry
 {
 
-    const BAV_PATH = "/../../configuration.php";
+    const BAV_PATH = "/../configuration.php";
     
     const INCLUDE_PATH = "bav/configuration.php";
 
@@ -85,6 +85,10 @@ class ConfigurationRegistry
      */
     public static function getConfiguration()
     {
+        if (self::$configuration === null) {
+            self::classConstructor();
+        }
+
         return self::$configuration;
     }
 }

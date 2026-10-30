@@ -15,6 +15,18 @@ Use [Composer](https://getcomposer.org/):
 }
 ```
 
+Include Composer's autoloader before using BAV:
+
+```php
+require_once __DIR__ . '/vendor/autoload.php';
+```
+
+Classes retain the `malkusch\bav` namespace and are loaded via PSR-4 from
+`src/`. The generated `autoloader/autoloader.php` is no longer used; replace
+any direct includes of it with Composer's autoloader. Run `composer install`
+after checking out the repository, or `composer dump-autoload` after changing
+autoload mappings in an existing installation.
+
 # Configuration
 
 You can use BAV out of the box. BAV comes with a ready to play default
