@@ -31,7 +31,7 @@ class AgencyQueryTest extends \PHPUnit\Framework\TestCase
             return new PDODataBackend(PDOFactory::makePDO());
         }
 
-        $container = DoctrineBackendContainer::buildByConnection(array('pdo' => PDOFactory::makePDO()), true);
+        $container = DoctrineBackendContainer::buildByConnection(DoctrineConnectionFactory::makeConnection(), true);
         return $container->getDataBackend();
     }
 
