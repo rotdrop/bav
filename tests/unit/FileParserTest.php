@@ -2,6 +2,8 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\DataBackend\File\FileParser\FileParser;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -12,7 +14,7 @@ require_once __DIR__ . "/../bootstrap.php";
  * @link bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK Donations
  * @see FileParser
  */
-class FileParserTest extends \PHPUnit_Framework_TestCase
+class FileParserTest extends \PHPUnit\Framework\TestCase
 {
     
     /**
@@ -63,8 +65,8 @@ class FileParserTest extends \PHPUnit_Framework_TestCase
      * Tests getLineLength()
      * 
      * @see FileParser::getLineLength()
-     * @dataProvider provideTestGetLineLength
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestGetLineLength")]
     public function testGetLineLength($lineLength, $file)
     {
         $parser = new FileParser($file);
@@ -77,7 +79,7 @@ class FileParserTest extends \PHPUnit_Framework_TestCase
      * @return array
      * @see testGetLineLength()
      */
-    public function provideTestGetLineLength()
+    public static function provideTestGetLineLength()
     {
         return array(
             array(6, __DIR__ . "/../data/fileParserTest/simple.txt"),
@@ -89,8 +91,8 @@ class FileParserTest extends \PHPUnit_Framework_TestCase
      * Tests getLines()
      * 
      * @see FileParser::getLines()
-     * @dataProvider provideTestGetLines
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestGetLines")]
     public function testGetLines($lines, $file)
     {
         $parser = new FileParser($file);
@@ -103,7 +105,7 @@ class FileParserTest extends \PHPUnit_Framework_TestCase
      * @return array
      * @see testGetLines()
      */
-    public function provideTestGetLines()
+    public static function provideTestGetLines()
     {
         return array(
             array(2, __DIR__ . "/../data/fileParserTest/simple.txt"),
@@ -115,8 +117,8 @@ class FileParserTest extends \PHPUnit_Framework_TestCase
      * Tests readLine()
      * 
      * @see FileParser::readLine()
-     * @dataProvider provideTestReadLine
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestReadLine")]
     public function testReadLine($file, $line, $expectedData)
     {
         $parser = new FileParser($file);
@@ -130,7 +132,7 @@ class FileParserTest extends \PHPUnit_Framework_TestCase
      * @return string[][]
      * @see testReadLine()
      */
-    public function provideTestReadLine()
+    public static function provideTestReadLine()
     {
         return array(
             array(

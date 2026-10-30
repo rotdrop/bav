@@ -2,6 +2,8 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\DataBackend\Pdo\StatementContainer;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -11,7 +13,7 @@ require_once __DIR__ . "/../bootstrap.php";
  * @author Markus Malkusch <markus@malkusch.de>
  * @see StatementContainer
  */
-class StatementContainerTest extends \PHPUnit_Framework_TestCase
+class StatementContainerTest extends \PHPUnit\Framework\TestCase
 {
     
     /**
@@ -19,9 +21,9 @@ class StatementContainerTest extends \PHPUnit_Framework_TestCase
      */
     private $statementContainer;
     
-    public function setUp()
+    public function setUp(): void
     {
-        $this->statementContainer = new StatementContainer(PDOFactory::makePDO());
+        $this->statementContainer = new StatementContainer(new \PDO('sqlite::memory:'));
     }
     
     /**
@@ -29,7 +31,7 @@ class StatementContainerTest extends \PHPUnit_Framework_TestCase
      */
     public function testStoring()
     {
-        $query = "SELECT :param as test FROM DUAL";
+        $query = "SELECT :param as test";
         $stmt1 = $this->statementContainer->prepare($query);
         $stmt2 = $this->statementContainer->prepare($query);
         
@@ -41,7 +43,7 @@ class StatementContainerTest extends \PHPUnit_Framework_TestCase
      */
     public function testQuery()
     {
-        $query = "SELECT :param as test FROM DUAL";
+        $query = "SELECT :param as test";
 
         $stmt = $this->statementContainer->prepare($query);
         $stmt->execute(array(":param" => 5));

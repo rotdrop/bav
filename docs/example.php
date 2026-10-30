@@ -14,6 +14,7 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 
 use malkusch\bav\BAV;
+use malkusch\bav\Exception\BAVException;
 
 /**
  * Let's have some fun with the bank 10000000
@@ -68,7 +69,7 @@ try {
  * edit the PDO object to create a valid DBS connection.
  */
 
-use malkusch\bav\PDODataBackendContainer;
+use malkusch\bav\DataBackend\Pdo\PDODataBackendContainer;
 
 try {
     /*

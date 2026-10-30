@@ -2,6 +2,15 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Bank\Agency;
+use malkusch\bav\Bank\Bank;
+use malkusch\bav\DataBackend\DataBackend;
+use malkusch\bav\DataBackend\File\FileDataBackend;
+use malkusch\bav\DataBackend\File\FileParser\FileParser;
+use malkusch\bav\DataBackend\Orm\Doctrine\DoctrineBackendContainer;
+use malkusch\bav\DataBackend\Orm\Doctrine\DoctrineDataBackend;
+use malkusch\bav\DataBackend\Pdo\PDODataBackend;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -11,7 +20,7 @@ require_once __DIR__ . "/../bootstrap.php";
  * @license WTFPL
  * @author Markus Malkusch <markus@malkusch.de>
  */
-class BackendTest extends \PHPUnit_Framework_TestCase
+class BackendTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -22,105 +31,84 @@ class BackendTest extends \PHPUnit_Framework_TestCase
     /**
      * @var DataBackend[]
      */
-    private static $freeableDatabackends = array();
+    private $freeableDatabackends = array();
 
     /**
      * Defines the reference backend
      */
-    public static function classConstructor()
+    public static function setUpBeforeClass(): void
     {
         self::$referenceBackend = new FileDataBackend();
     }
-
-    /**
-     * @return DataBackend[] The tested backends
-     */
-    public function provideBackends()
+    public static function provideBackends(): array
     {
-        $backends = array();
-        
-        $backends[] = new PDODataBackend(PDOFactory::makePDO());
-        $backends[] = new FileDataBackend();
-        
-        $conn = array(
-            "pdo" => PDOFactory::makePDO(),
-        );
-        $doctrineContainer = DoctrineBackendContainer::buildByConnection($conn, true);
-        $backends[] = new DoctrineDataBackend($doctrineContainer->getEntityManager());
-
-        foreach ($backends as &$backend) {
-            if (! $backend->isInstalled()) {
-                $backend->install();
-
-            }
-            
-            self::$freeableDatabackends[] = $backend;
-            
-            $backend = array($backend);
-            
-        };
-        
-        return $backends;
+        return array(array('pdo'), array('file'), array('doctrine'));
     }
 
-    /**
-     * @return DataBackend[]
-     */
-    public function provideInstallationBackends()
+    public static function provideInstallationBackends(): array
     {
-        $backends = array();
-        
-        $backends[] = new PDODataBackend(PDOFactory::makePDO(), "bavtest_");
+        return self::provideBackends();
+    }
 
-        $fileUtil = new FileUtil();
-        $backends[] = new FileDataBackend(tempnam($fileUtil->getTempDirectory(), "bavtest"));
-        
-        $conn = array(
-            "driver" => "pdo_sqlite",
-            "path" => ":memory:"
-        );
-        $doctrineContainer = DoctrineBackendContainer::buildByConnection($conn, true);
-        $backends[] = new DoctrineDataBackend($doctrineContainer->getEntityManager());
+    private function createBackend(string $type, bool $installation = false): DataBackend
+    {
+        switch ($type) {
+            case 'pdo':
+                $backend = new PDODataBackend(PDOFactory::makePDO(), $installation ? 'bavtest_' : 'bav_');
+                break;
 
-        foreach ($backends as &$backend) {
+            case 'file':
+                $file = $installation ? tempnam(sys_get_temp_dir(), 'bavtest') : null;
+                $backend = new FileDataBackend($file);
+                break;
+
+            case 'doctrine':
+                $connection = $installation
+                    ? array('driver' => 'pdo_sqlite', 'memory' => true)
+                    : array('pdo' => PDOFactory::makePDO());
+                $container = DoctrineBackendContainer::buildByConnection($connection, true);
+                $backend = new DoctrineDataBackend($container->getEntityManager());
+                break;
+
+            default:
+                throw new \InvalidArgumentException("Unknown backend: $type");
+        }
+
+        $this->freeableDatabackends[] = $backend;
+        if ($installation) {
             if ($backend->isInstalled()) {
                 $backend->uninstall();
-
             }
-            
-            self::$freeableDatabackends[] = $backend;
-            
-            $backend = array($backend);
-            
-        };
-        
-        return $backends;
+        } elseif (! $backend->isInstalled()) {
+            $backend->install();
+        }
+
+        return $backend;
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         // Reduce memory foot print
-        foreach (self::$freeableDatabackends as $backend) {
+        foreach ($this->freeableDatabackends as $backend) {
             $backend->free();
             
         }
     }
 
-    /**
-     * @dataProvider provideInstallationBackends
-     */
-    public function testInstallation(DataBackend $backend)
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideInstallationBackends")]
+    public function testInstallation(string $backendType)
     {
+        $backend = $this->createBackend($backendType, true);
         $backend->install();
         $backend->update();
         $backend->uninstall();
+        $this->assertFalse($backend->isInstalled());
     }
 
-    /**
-     * @dataProvider provideInstallationBackends
-     */
-    public function testIsInstalled(DataBackend $backend)
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideInstallationBackends")]
+    public function testIsInstalled(string $backendType)
     {
+        $backend = $this->createBackend($backendType, true);
         $backend->install();
         $this->assertTrue($backend->isInstalled());
 
@@ -128,11 +116,10 @@ class BackendTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($backend->isInstalled());
     }
 
-    /**
-     * @dataProvider provideInstallationBackends
-     */
-    public function testLastUpdate(DataBackend $backend)
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideInstallationBackends")]
+    public function testLastUpdate(string $backendType)
     {
+        $backend = $this->createBackend($backendType, true);
         $now = time();
         $backend->install();
         $update = $backend->getLastUpdate();
@@ -149,10 +136,11 @@ class BackendTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests that the backend provides all banks and agencies
      * 
-     * @dataProvider provideBackends
      */
-    public function testInstallationIsComplete(DataBackend $backend)
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideBackends")]
+    public function testInstallationIsComplete(string $backendType)
     {
+        $backend = $this->createBackend($backendType);
         $agencies = array();
         
         foreach ($this->provideBanks() as $referenceBank) {
@@ -228,10 +216,11 @@ class BackendTest extends \PHPUnit_Framework_TestCase
      * Testet, dass ein erneutes $backend->getBank($id) das selbe
      * Objekt zurückliefert.
      *
-     * @dataProvider provideBackends
      */
-    public function testSingleInstances(DataBackend $backend)
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideBackends")]
+    public function testSingleInstances(string $backendType)
     {
+        $backend = $this->createBackend($backendType);
         foreach (self::$referenceBackend->getAllBanks() as $refBank) {
             $this->assertTrue(
                 $backend->getBank($refBank->getBankID()) === $backend->getBank($refBank->getBankID()),
@@ -240,11 +229,10 @@ class BackendTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @dataProvider provideBackends
-     */
-    public function testGetAllBanks(DataBackend $backend)
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideBackends")]
+    public function testGetAllBanks(string $backendType)
     {
+        $backend = $this->createBackend($backendType);
         $this->assertEquals(
             count(self::$referenceBackend->getAllBanks()),
             count($backend->getAllBanks())
@@ -254,10 +242,11 @@ class BackendTest extends \PHPUnit_Framework_TestCase
     /**
      * Test loading all banks
      * 
-     * @dataProvider provideBackends
      */
-    public function testBanks(DataBackend $backend)
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideBackends")]
+    public function testBanks(string $backendType)
     {
+        $backend = $this->createBackend($backendType);
         foreach (self::$referenceBackend->getAllBanks() as $referenceBank) {
             $testedBank = $backend->getBank($referenceBank->getBankID());
 
@@ -282,10 +271,11 @@ class BackendTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests loading all agencies
      * 
-     * @dataProvider provideBackends
      */
-    public function testAgencies(DataBackend $backend)
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideBackends")]
+    public function testAgencies(string $backendType)
     {
+        $backend = $this->createBackend($backendType);
         foreach (self::$referenceBackend->getAllBanks() as $referenceBank) {
             $testedBank = $backend->getBank($referenceBank->getBankID());
             
@@ -330,10 +320,10 @@ class BackendTest extends \PHPUnit_Framework_TestCase
      * @see testIsValidBIC()
      * @return array
      */
-    public function provideTestIsValidBIC()
+    public static function provideTestIsValidBIC()
     {
         $cases = array();
-        foreach ($this->provideBackends() as $backendArray) {
+        foreach (self::provideBackends() as $backendArray) {
             $backend = $backendArray[0];
             $cases[] = array($backend, true, "VZVDDED1XXX");
             $cases[] = array($backend, true, "VZVDDED1001");
@@ -348,11 +338,12 @@ class BackendTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests DataBackend::isValidBIC();
      *
-     * @dataProvider provideTestIsValidBIC
      * @see DataBackend::isValidBIC();
      */
-    public function testIsValidBIC(DataBackend $backend, $expected, $bic)
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestIsValidBIC")]
+    public function testIsValidBIC(string $backendType, $expected, $bic)
     {
+        $backend = $this->createBackend($backendType);
         $this->assertEquals($expected, $backend->isValidBIC($bic));
     }
 
@@ -361,10 +352,10 @@ class BackendTest extends \PHPUnit_Framework_TestCase
      * 
      * @see testGetBICAgencies()
      */
-    public function provideTestGetBICAgencies()
+    public static function provideTestGetBICAgencies()
     {
         $cases = array();
-        foreach ($this->provideBackends() as $backendArray) {
+        foreach (self::provideBackends() as $backendArray) {
             $backend = $backendArray[0];
             $cases[] = array($backend, "XXX", array());
             $cases[] = array($backend, "VZVDDED1XXX", array("52944"));
@@ -378,11 +369,12 @@ class BackendTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests DataBackend::getBICAgencies()
      * 
-     * @dataProvider provideTestGetBICAgencies
      * @see DataBackend::getBICAgencies();
      */
-    public function testGetBICAgencies(DataBackend $backend, $bic, $expectedAgencyIds)
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestGetBICAgencies")]
+    public function testGetBICAgencies(string $backendType, $bic, $expectedAgencyIds)
     {
+        $backend = $this->createBackend($backendType);
         $agencies = $backend->getBICAgencies($bic);
         $getID = function (Agency $agency) {
             return $agency->getID();
@@ -394,5 +386,3 @@ class BackendTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedAgencyIds, $agenciesIds);
     }
 }
-
-BackendTest::classConstructor();

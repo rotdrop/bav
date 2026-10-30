@@ -1,0 +1,435 @@
+<?php
+
+namespace malkusch\bav\DataBackend\File;
+
+use malkusch\bav\Bank\Agency;
+use malkusch\bav\Bank\Bank;
+use malkusch\bav\DataBackend\DataBackend;
+use malkusch\bav\DataBackend\Exception\BankNotFoundException;
+use malkusch\bav\DataBackend\Exception\DataBackendException;
+use malkusch\bav\DataBackend\Exception\DataBackendIOException;
+use malkusch\bav\DataBackend\Exception\NoMainAgencyException;
+use malkusch\bav\DataBackend\File\Download\Downloader;
+use malkusch\bav\DataBackend\File\Download\Exception\DownloaderException;
+use malkusch\bav\DataBackend\File\FileParser\Exception\FileParserException;
+use malkusch\bav\DataBackend\File\FileParser\Exception\FileParserIOException;
+use malkusch\bav\DataBackend\File\FileParser\Exception\ParseException;
+use malkusch\bav\DataBackend\File\FileParser\Exception\UndefinedFileParserContextException;
+use malkusch\bav\DataBackend\File\FileParser\FileParser;
+use malkusch\bav\DataBackend\File\FileParser\FileParserContext;
+use malkusch\bav\DataBackend\File\Validator\FileValidator;
+use malkusch\bav\Util\Exception\FileException;
+use malkusch\bav\Util\FileUtil;
+
+use \malkusch\index\FixedSizeIndex;
+use \malkusch\index\IndexException;
+
+/**
+ * It uses the huge file from the Bundesbank and uses a binary search to find a row.
+ * This is the easiest way to use BAV. BAV can work as a standalone application without
+ * any DBS.
+ *
+ * @author Markus Malkusch <markus@malkusch.de>
+ * @link bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK Donations
+ * @license WTFPL
+ */
+class FileDataBackend extends DataBackend
+{
+
+    // @codingStandardsIgnoreStart
+    // The parent contains something like this:
+    // https://www.bundesbank.de/resource/blob/602632/31fec41357f012d537ce62045395929a/mL/blz-aktuell-txt-data.txt
+    const DOWNLOAD_BASE_URI = "https://www.bundesbank.de";
+    const DOWNLOAD_PARENT_URI= self::DOWNLOAD_BASE_URI . "/de/aufgaben/unbarer-zahlungsverkehr/serviceangebot/bankleitzahlen/download-bankleitzahlen-602592";
+    // @codingStandardsIgnoreEnd
+
+    /**
+     * @var array
+     */
+    private $contextCache = array();
+
+    /**
+     * @var FileParser
+     */
+    private $parser;
+
+    /**
+     * @var Index_FixedSize
+     */
+    private $index;
+
+    /**
+     * @var FileUtil
+     */
+    private $fileUtil;
+
+    /**
+     * @param String $file The data source
+     */
+    public function __construct($file = null)
+    {
+        $this->parser = new FileParser($file);
+        $this->fileUtil = new FileUtil();
+    }
+
+    /**
+     * @return FixedSizeIndex
+     */
+    private function getIndex()
+    {
+        if ($this->index == null) {
+            $this->index = new FixedSizeIndex(
+                $this->parser->getFile(),
+                FileParser::BANKID_OFFSET,
+                FileParser::BANKID_LENGTH
+            );
+
+        }
+        return $this->index;
+    }
+
+    /**
+     * Returns the path to the data file.
+     *
+     * @return string
+     */
+    public function getFile()
+    {
+        return $this->parser->getFile();
+    }
+
+    /**
+     * For the file of March 8th 2010 (blz_20100308.txt)
+     * Bundesbank appended new banks at the end of the file.
+     * That broked binary search. This method sorts the lines so
+     * that binary search is working again.
+     *
+     * Be aware that this needs some amount of memory.
+     *
+     * @param String $file
+     * @throws DataBackendIOException
+     * @throws FileException
+     */
+    private function sortFile($file)
+    {
+        //read the unordered bank file
+        $lines = file($file);
+        if (! is_array($lines) || empty($lines)) {
+            throw new DataBackendIOException("Could not read lines in '$file'.");
+
+        }
+
+        //build a sorted index for the bankIDs
+        $index = array();
+        foreach ($lines as $line => $data) {
+            $bankID = substr($data, FileParser::BANKID_OFFSET, FileParser::BANKID_LENGTH);
+            $index[$line] = $bankID;
+
+        }
+        asort($index);
+
+        //write a sorted bank file atomically
+        $temp    = tempnam($this->fileUtil->getTempDirectory(), "");
+        $tempH   = fopen($temp, 'w');
+        if (! ($temp && $tempH)) {
+            throw new DataBackendIOException("Could not open a temporary file.");
+
+        }
+        foreach (array_keys($index) as $line) {
+            $data = $lines[$line];
+
+            $writtenBytes = fputs($tempH, $data);
+            if ($writtenBytes != strlen($data)) {
+                throw new DataBackendIOException("Could not write sorted data: '$data' into $temp.");
+
+            }
+
+        }
+        fclose($tempH);
+        $this->fileUtil->safeRename($temp, $file);
+    }
+
+    /**
+     * @see DataBackend::uninstall()
+     * @throws DataBackendIOException
+     */
+    public function uninstall()
+    {
+        if (! unlink($this->parser->getFile())) {
+            throw new DataBackendIOException();
+
+        }
+    }
+
+    /**
+     * @see DataBackend::install()
+     * @throws DataBackendIOException
+     */
+    public function install()
+    {
+        $this->update();
+    }
+
+    /**
+     * This method works only if your PHP is compiled with cURL.
+     *
+     * @see DataBackend::update()
+     * @throws DataBackendIOException
+     * @throws FileException
+     * @throws DownloaderException
+     */
+    public function update()
+    {
+        $downloader = new Downloader();
+
+        $parentContent = $downloader->downloadContent(self::DOWNLOAD_PARENT_URI);
+        if (preg_match('|href="([^"]+/blz-aktuell-txt-data.txt)"|', $parentContent, $matches)) {
+            $downloadUri = $matches[1];
+            if (!str_starts_with($downloadUri, 'https://')) {
+                $downloadUri = self::DOWNLOAD_BASE_URI . $downloadUri;
+            }
+        } else {
+            throw new DownloaderException("Failed opening parent page " . self::DOWNLOAD_PARENT_URI . " containing download-uri");
+        }
+
+        // download file
+        $file = $downloader->downloadFile($downloadUri);
+
+        // Validate file format.
+        $validator = new FileValidator();
+        $validator->validate($file);
+
+        // blz_20100308.txt is not sorted.
+        $parser     = new FileParser($file);
+        $lastBankID = $parser->getBankID($parser->getLines());
+        if ($lastBankID < 80000000) {
+            $this->sortFile($file);
+
+        }
+
+        $this->fileUtil->safeRename($file, $this->parser->getFile());
+        chmod($this->parser->getFile(), 0644);
+    }
+
+    /**
+     * @throws DataBackendIOException
+     * @throws DataBackendException
+     * @return Bank[]
+     * @see DataBackend::getAllBanks()
+     */
+    public function getAllBanks()
+    {
+        try {
+            for ($i = 0; $i < $this->parser->getLines(); $i++) {
+                if (isset($this->instances[$this->parser->getBankID($i)])) {
+                    continue;
+
+                }
+                $line = $this->parser->readLine($i);
+                $bank = $this->parser->getBank($this, $line);
+                $this->instances[$bank->getBankID()] = $bank;
+                $this->contextCache[$bank->getBankID()] = new FileParserContext($i);
+            }
+            return array_values($this->instances);
+
+        } catch (FileParserIOException $e) {
+            throw new DataBackendIOException($e->getMessage(), $e->getCode(), $e);
+
+        } catch (FileParserException $e) {
+            throw new DataBackendException($e->getMessage(), $e->getCode(), $e);
+
+        }
+    }
+
+    /**
+     * @throws DataBackendIOException
+     * @throws BankNotFoundException
+     * @param String $bankID
+     * @see DataBackend::getNewBank()
+     * @return Bank
+     */
+    public function getNewBank($bankID)
+    {
+        try {
+            $result = $this->getIndex()->search($bankID);
+
+            if ($result == null) {
+                throw new BankNotFoundException($bankID);
+
+            }
+
+            $line = $result->getOffset() / $this->parser->getLineLength();
+            $this->contextCache[$bankID] = new FileParserContext($line);
+
+            return $this->parser->getBank($this, $this->parser->readLine($line));
+
+        } catch (FileParserException $e) {
+            throw new DataBackendIOException($e->getMessage(), $e->getCode(), $e);
+
+        } catch (IndexException $e) {
+            throw new DataBackendIOException($e->getMessage(), $e->getCode(), $e);
+
+        }
+    }
+
+    /**
+     * @see DataBackend::getMainAgency()
+     * @throws DataBackendException
+     * @throws NoMainAgencyException
+     * @return Agency
+     */
+    public function getMainAgency(Bank $bank)
+    {
+        try {
+            $context = $this->defineContextInterval($bank->getBankID());
+            for ($line = $context->getStart(); $line <= $context->getEnd(); $line++) {
+                $content = $this->parser->readLine($line);
+                if ($this->parser->isMainAgency($content)) {
+                    return $this->parser->getAgency($bank, $content);
+
+                }
+            }
+            // Maybe there are banks without a main agency
+            throw new NoMainAgencyException($bank);
+
+        } catch (UndefinedFileParserContextException $e) {
+            throw new \LogicException("Start and end should be defined.");
+
+        } catch (FileParserIOException $e) {
+            throw new DataBackendIOException("Parser Exception at bank {$bank->getBankID()}");
+
+        } catch (ParseException $e) {
+            throw new DataBackendException(get_class($e) . ": " . $e->getMessage());
+
+        }
+    }
+
+    /**
+     * @see DataBackend::getAgenciesForBank()
+     * @throws DataBackendIOException
+     * @throws DataBackendException
+     * @return Agency[]
+     */
+    public function getAgenciesForBank(Bank $bank)
+    {
+        try {
+            $context = $this->defineContextInterval($bank->getBankID());
+            $agencies = array();
+            for ($line = $context->getStart(); $line <= $context->getEnd(); $line++) {
+                $content = $this->parser->readLine($line);
+                if (! $this->parser->isMainAgency($content)) {
+                    $agencies[] = $this->parser->getAgency($bank, $content);
+
+                }
+            }
+            return $agencies;
+
+        } catch (UndefinedFileParserContextException $e) {
+            throw new \LogicException("Start and end should be defined.");
+
+        } catch (FileParserIOException $e) {
+            throw new DataBackendIOException();
+
+        } catch (ParseException $e) {
+            throw new DataBackendException();
+
+        }
+    }
+
+    /**
+     * @return FileParserContext
+     */
+    private function defineContextInterval($bankID)
+    {
+        if (! isset($this->contextCache[$bankID])) {
+            throw new \LogicException("The contextCache object should exist!");
+
+        }
+        $context = $this->contextCache[$bankID];
+        /**
+         * Find start
+         */
+        if (! $context->isStartDefined()) {
+            for ($start = $context->getLine() - 1; $start >= 0; $start--) {
+                if ($this->parser->getBankID($start) != $bankID) {
+                    break;
+
+                }
+            }
+            $context->setStart($start + 1);
+
+        }
+        /**
+         * Find end
+         */
+        if (! $context->isEndDefined()) {
+            for ($end = $context->getLine() + 1; $end <= $this->parser->getLines(); $end++) {
+                if ($this->parser->getBankID($end) != $bankID) {
+                    break;
+
+                }
+            }
+            $context->setEnd($end - 1);
+
+        }
+        return $context;
+    }
+
+    /**
+     * Returns the timestamp of the last update.
+     *
+     * @return int timestamp
+     * @throws DataBackendException
+     */
+    public function getLastUpdate()
+    {
+        $time = filemtime($this->parser->getFile());
+        if ($time === false) {
+            return new DataBackendException(
+                "Could not read modification time from {$this->parser->getFile()}"
+            );
+
+        }
+        return $time;
+    }
+
+    /**
+     * Returns true if the backend was installed.
+     *
+     * @return bool
+     */
+    public function isInstalled()
+    {
+        return file_exists($this->parser->getFile())
+            && filesize($this->parser->getFile()) > 0;
+    }
+
+    /**
+     * Returns bank agencies for a given BIC.
+     *
+     * @todo This method is inefficient. Add index based implementation.
+     * @param string $bic BIC
+     * @return Agency[]
+     */
+    public function getBICAgencies($bic)
+    {
+        $agencies = array();
+        foreach ($this->getAllBanks() as $bank) {
+            $bankAgencies = $bank->getAgencies();
+            $bankAgencies[] = $bank->getMainAgency();
+            foreach ($bankAgencies as $agency) {
+                if ($agency->hasBIC() && $agency->getBIC() == $bic) {
+                    $agencies[] = $agency;
+
+                }
+            }
+        }
+        return $agencies;
+    }
+
+    public function free()
+    {
+        parent::free();
+        $this->contextCache = array();
+    }
+}

@@ -2,6 +2,10 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Bank\Bank;
+use malkusch\bav\DataBackend\Pdo\PDODataBackend;
+use malkusch\bav\Validator\ValidatorBankDependent;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -16,9 +20,9 @@ require_once __DIR__ . "/../bootstrap.php";
  *
  * @author Markus Malkusch <markus@malkusch.de>
  * @license WTFPL
- * @large
  */
-class CrossProjectTest extends \PHPUnit_Framework_TestCase
+#[\PHPUnit\Framework\Attributes\Large]
+class CrossProjectTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -67,7 +71,7 @@ class CrossProjectTest extends \PHPUnit_Framework_TestCase
      */
     private static $testAPIs = array();
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::$testAPIs = array(new BAVTestAPI());
 
@@ -75,7 +79,7 @@ class CrossProjectTest extends \PHPUnit_Framework_TestCase
             self::$testAPIs[] = new KontocheckTestAPI();
 
         } catch (TestAPIUnavailableException $e) {
-            trigger_error("KontocheckTestAPI unavailable", E_USER_WARNING);
+            self::markTestSkipped("KontocheckTestAPI unavailable");
 
         }
 
@@ -92,7 +96,7 @@ class CrossProjectTest extends \PHPUnit_Framework_TestCase
     /**
      * @return Bank[][]
      */
-    public function provideBanks()
+    public static function provideBanks()
     {
         $nodeNumber = getenv(self::ENV_NODE_NUMBER);
         if ($nodeNumber) {
@@ -122,19 +126,17 @@ class CrossProjectTest extends \PHPUnit_Framework_TestCase
         return $banks;
     }
 
-    /**
-     * @dataProvider provideBanks
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideBanks")]
     public function testCrossProjects(Bank $bank)
     {
         try {
             // Skip failed bank dependend validators or valid independend validators.
-            $isSkip = $bank->getValidator() instanceof Validator_BankDependent
+            $isSkip = $bank->getValidator() instanceof ValidatorBankDependent
                     ? array_key_exists($bank->getValidationType(), $this->failedBankDependentValidators)
                     : array_key_exists($bank->getValidationType(), $this->testedValidators);
 
             if ($isSkip) {
-                return;
+                $this->markTestSkipped("Validator already compared on this node.");
 
             }
 
@@ -150,10 +152,10 @@ class CrossProjectTest extends \PHPUnit_Framework_TestCase
             }
 
         } catch (BankNotFoundTestAPIException $e) {
-            return;
+            $this->markTestSkipped($e->getMessage());
 
-        } catch (Exception $e) {
-            if ($bank instanceof Validator_BankDependent) {
+        } catch (\Exception $e) {
+            if ($bank->getValidator() instanceof ValidatorBankDependent) {
                 $this->failedBankDependentValidators[$bank->getValidationType()] = true;
 
             }

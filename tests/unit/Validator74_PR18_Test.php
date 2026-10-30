@@ -2,6 +2,8 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Validator\Validators\Validator74;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -11,7 +13,7 @@ require_once __DIR__ . "/../bootstrap.php";
  * @license WTFPL
  * @link https://github.com/bav-php/bav/pull/18
  */
-class Validator74_PR18_Test extends \PHPUnit_Framework_TestCase
+class Validator74_PR18_Test extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -22,14 +24,13 @@ class Validator74_PR18_Test extends \PHPUnit_Framework_TestCase
      * @param string $account  The account id.
      * @param bool   $expected The expected validation result.
      * 
-     * @dataProvider provideTestAllHalfDecades
      * @link https://www.mail-archive.com/aqbanking-devel@lists.sourceforge.net/msg01292.html
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider("provideTestAllHalfDecades")]
     public function testAllHalfDecades($account, $expected)
     {
-        $backend = $this->getMock("malkusch\bav\FileDataBackend");
-        $bank = $this->getMock(
-                "malkusch\bav\Bank", array(), array($backend, 1, 74));
+        $backend = $this->createStub(\malkusch\bav\DataBackend\DataBackend::class);
+        $bank = new \malkusch\bav\Bank\Bank($backend, 1, 74);
         
         $validator = new Validator74($bank);
         $this->assertEquals($expected, $validator->isValid($account));
@@ -40,7 +41,7 @@ class Validator74_PR18_Test extends \PHPUnit_Framework_TestCase
      * 
      * @return array Test cases.
      */
-    public function provideTestAllHalfDecades()
+    public static function provideTestAllHalfDecades()
     {
         return array(
             array("500004", true), //  5 - 1  = 4

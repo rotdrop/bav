@@ -3,19 +3,6 @@
 namespace malkusch\bav;
 
 /**
- * time() mock.
- *
- * This mock works only if the built-in wasn't used before. I.e. tests
- * which want to mock time() have to run before other tests which might
- * call somewhere in the stack an unmocked time(). If the built in was
- * called before there is no chance to mock time() anymore.
- */
-function time()
-{
-    return TimeMock::time();
-}
-
-/**
  * Mock for PHP's time() built-in.
  *
  * @license WTFPL
@@ -51,4 +38,13 @@ class TimeMock
     {
         return self::$time = $time;
     }
+}
+
+namespace malkusch\bav\DataBackend\Update;
+
+use malkusch\bav\TimeMock;
+
+function time()
+{
+    return TimeMock::time();
 }

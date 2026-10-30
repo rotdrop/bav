@@ -5,6 +5,8 @@ BAV (bank account validator) is a validation library for German bank accounts.
 
 # Installation
 
+Requires PHP 8.3 or later.
+
 Use [Composer](https://getcomposer.org/):
 
 ```json
@@ -14,6 +16,36 @@ Use [Composer](https://getcomposer.org/):
     }
 }
 ```
+
+Include Composer's autoloader before using BAV:
+
+```php
+require_once __DIR__ . '/vendor/autoload.php';
+```
+
+Classes use the `malkusch\bav` namespace prefix and are loaded via PSR-4 from
+`src/`. Sub-namespaces mirror the original directory hierarchy, with an
+uppercase first letter for each directory and namespace segment. For example,
+`classes/dataBackend/file/FileDataBackend.php` is now
+`src/DataBackend/File/FileDataBackend.php`, declaring
+`malkusch\bav\DataBackend\File\FileDataBackend`.
+
+The facade remains `malkusch\bav\BAV`. Other classes have new fully qualified
+names; update imports and class-name strings when upgrading. Common examples:
+
+| Class | New fully qualified name |
+|---|---|
+| `Bank` | `malkusch\bav\Bank\Bank` |
+| `DefaultConfiguration` | `malkusch\bav\Configuration\DefaultConfiguration` |
+| `PDODataBackendContainer` | `malkusch\bav\DataBackend\Pdo\PDODataBackendContainer` |
+| `AutomaticUpdatePlan` | `malkusch\bav\DataBackend\Update\AutomaticUpdatePlan` |
+| `Validator00` | `malkusch\bav\Validator\Validators\Validator00` |
+
+No aliases for the old flat class names are registered.
+The generated `autoloader/autoloader.php` is no longer used; replace
+any direct includes of it with Composer's autoloader. Run `composer install`
+after checking out the repository, or `composer dump-autoload` after changing
+autoload mappings in an existing installation.
 
 # Configuration
 
@@ -40,6 +72,10 @@ or preferably creating the file `bav/configuration.php` which returns a
 
 ```php
 namespace malkusch\bav;
+
+use malkusch\bav\Configuration\DefaultConfiguration;
+use malkusch\bav\DataBackend\Pdo\PDODataBackendContainer;
+use malkusch\bav\DataBackend\Update\AutomaticUpdatePlan;
 
 $configuration = new DefaultConfiguration();
 
@@ -78,6 +114,9 @@ in your `bav/configuration.php`:
 
 ```php
 namespace malkusch\bav;
+
+use malkusch\bav\Configuration\DefaultConfiguration;
+use malkusch\bav\DataBackend\Update\AutomaticUpdatePlan;
 
 $configuration = new DefaultConfiguration();
 $configuration->setUpdatePlan(new AutomaticUpdatePlan());
@@ -182,6 +221,56 @@ which uses doctrine
 as data backend.
 
 
+# Development and tests
+
+The test suite uses PHPUnit 12.5 and requires PHP 8.3 or later with the
+`curl`, `dom`, `mbstring`, `pdo_sqlite`, `xml`, and `xmlwriter` extensions.
+The library also requires PHP 8.3 or later; consumers installing without
+development dependencies do not need PHPUnit.
+
+```sh
+composer install
+composer test
+```
+
+The default `unit` suite runs offline, without a database server or downloaded bank
+list. It uses the checked-in account cases and Bundesbank excerpt. To run one
+test or randomize execution order:
+
+```sh
+vendor/bin/phpunit --filter ValidatorTest
+vendor/bin/phpunit --order-by=random
+```
+
+The `integration` suite contains the facade, context, database, download, and
+backend installation tests. It needs network access to the Bundesbank and GNU,
+PDO MySQL and SQLite support, and a **dedicated, disposable MySQL database**.
+These tests install, update, and remove tables and bank data. Prepare the database
+and downloaded `data/banklist.txt` before running them:
+
+```sh
+export PDO_DSN='mysql:host=localhost;dbname=bav_test'
+export PDO_USER='bav_test'
+export PDO_PASSWORD='your-test-database-password'
+php tests/bin/test-install.php
+composer test:integration
+```
+
+The facade and backend tests retain their historical bank and agency
+expectations, which may differ from today's Bundesbank data.
+
+The exhaustive cross-project comparisons are opt-in, require the integration
+environment and the optional Kontocheck extension, and can take days:
+
+```sh
+NODE_NUMBER=0 NODE_COUNT=2 composer test:cross-project
+```
+
+The four unfinished parser tests remain marked incomplete. On PHP 8.4 and later,
+the existing implicitly nullable `FileUtil` constructor also reports a
+deprecation; this is not a PHPUnit API deprecation.
+
+
 # License and authors
 
 This project is free and under the WTFPL. So do what ever you want.
@@ -195,4 +284,4 @@ Björn Wilmsmann. Responsable for this project is Markus Malkusch <markus@malkus
 If you like BAV and feel generous donate a few Bitcoins here:
 [1335STSwu9hST4vcMRppEPgENMHD2r1REK](bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK)
 
-[![Build Status](https://travis-ci.org/bav-php/bav.svg?branch=master)](https://travis-ci.org/bav-php/bav)
+[![Tests](https://github.com/rotdrop/bav/actions/workflows/tests.yml/badge.svg)](https://github.com/rotdrop/bav/actions/workflows/tests.yml)

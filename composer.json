@@ -27,10 +27,17 @@
         }
     ],
     "autoload": {
-        "files": ["autoloader/autoloader.php"]
+        "psr-4": {
+            "malkusch\\bav\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "malkusch\\bav\\": "tests/classes/"
+        }
     },
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.3",
         "malkusch/php-index": "dev-master"
     },
     "suggest": {
@@ -41,11 +48,17 @@
         "doctrine/orm": "Support for Doctrine ORM data backend"
     },
     "require-dev": {
-        "phpunit/phpunit": ">=4",
-        "doctrine/orm": "^2"
+        "phpunit/phpunit": "^12.5",
+        "doctrine/orm": "^2",
+        "symfony/cache": "^7.4"
     },
     "archive": {
         "exclude": ["/tests"]
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:integration": "phpunit --testsuite integration",
+        "test:cross-project": "phpunit --testsuite cross-project"
     },
     "bin": [
         "bin/bav-update.php",

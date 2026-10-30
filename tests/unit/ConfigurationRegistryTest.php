@@ -2,6 +2,8 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Configuration\ConfigurationRegistry;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -11,15 +13,24 @@ require_once __DIR__ . "/../bootstrap.php";
  * @licends GPL
  * @see ConfigurationRegistry
  */
-class ConfigurationRegistryTest extends \PHPUnit_Framework_TestCase
+class ConfigurationRegistryTest extends \PHPUnit\Framework\TestCase
 {
+    private $configuration;
+    private $includePath;
+
+    protected function setUp(): void
+    {
+        $this->configuration = ConfigurationRegistry::getConfiguration();
+        $this->includePath = get_include_path();
+    }
     
     /**
      * Disable update hook
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
-        ConfigurationRegistry::getConfiguration()->setUpdatePlan(null);
+        ConfigurationRegistry::setConfiguration($this->configuration);
+        set_include_path($this->includePath);
     }
 
     /**
@@ -34,10 +45,9 @@ class ConfigurationRegistryTest extends \PHPUnit_Framework_TestCase
         ConfigurationRegistry::classConstructor();
         $configuration = ConfigurationRegistry::getConfiguration();
         
-        $this->assertInstanceOf("malkusch\bav\Configuration", $configuration);
+        $this->assertInstanceOf("malkusch\bav\Configuration\Configuration", $configuration);
         $this->assertEquals("test", $configuration->getTempDirectory());
         
-        restore_include_path();
     }
     
     /**
@@ -50,7 +60,7 @@ class ConfigurationRegistryTest extends \PHPUnit_Framework_TestCase
         ConfigurationRegistry::classConstructor();
         $configuration = ConfigurationRegistry::getConfiguration();
         
-        $this->assertInstanceOf("malkusch\bav\DefaultConfiguration", $configuration);
+        $this->assertInstanceOf("malkusch\bav\Configuration\DefaultConfiguration", $configuration);
         $this->assertNotEquals("test", $configuration->getTempDirectory());
     }
 }

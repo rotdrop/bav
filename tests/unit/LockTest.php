@@ -2,6 +2,8 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Util\Lock;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -11,7 +13,7 @@ require_once __DIR__ . "/../bootstrap.php";
  * @author Markus Malkusch <markus@malkusch.de>
  * @see Lock
  */
-class LockTest extends \PHPUnit_Framework_TestCase
+class LockTest extends \PHPUnit\Framework\TestCase
 {
     
     /**
