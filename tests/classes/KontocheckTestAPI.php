@@ -2,6 +2,8 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Bank\Bank;
+
 /**
  * The API for Michael Plugge's kontocheck.
  *

@@ -2,6 +2,8 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Validator\ContextValidation;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -119,7 +121,7 @@ class ContextValidationTest extends \PHPUnit_Framework_TestCase
      * Test an invalid context
      * 
      * @see ContextValidation::getValidAccountFilterCallback()
-     * @expectedException malkusch\bav\InvalidContextException
+     * @expectedException malkusch\bav\DataBackend\Exception\InvalidContextException
      */
     public function testFilterInvalidContext()
     {
@@ -134,7 +136,7 @@ class ContextValidationTest extends \PHPUnit_Framework_TestCase
      * Test an invalid context
      * 
      * @see ContextValidation::isValidAccount()
-     * @expectedException malkusch\bav\InvalidContextException
+     * @expectedException malkusch\bav\DataBackend\Exception\InvalidContextException
      */
     public function testInvalidContext()
     {

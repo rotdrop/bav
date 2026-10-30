@@ -2,6 +2,9 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Bank\Bank;
+use malkusch\bav\Validator\ValidatorFactory;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -37,7 +40,7 @@ class ValidatorFactoryTest extends \PHPUnit_Framework_TestCase
         $bank = new Bank($bav->getDataBackend(), null, $type);
         
         $validator = $this->factory->build($bank);
-        $this->assertInstanceOf("\\malkusch\\bav\\Validator$type", $validator);
+        $this->assertInstanceOf("\\malkusch\\bav\\Validator\\Validators\\Validator$type", $validator);
     }
     
     /**
@@ -50,7 +53,7 @@ class ValidatorFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $cases = array();
         
-        $files = ClassFile::getClassFiles(__DIR__.'/../../src/');
+        $files = ClassFile::getClassFiles(__DIR__.'/../../src/Validator/Validators/');
         foreach ($files as $class) {
             if (! preg_match('~^Validator([A-Z0-9]{2})$~', $class->getName(), $matchType)) {
                 continue;

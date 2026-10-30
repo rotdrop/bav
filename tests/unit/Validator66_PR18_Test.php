@@ -2,6 +2,8 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Validator\Validators\Validator66;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -25,9 +27,9 @@ class Validator66_PR18_Test extends \PHPUnit_Framework_TestCase
      */
     public function testRemainer0and1($account, $expected)
     {
-        $backend = $this->getMock("malkusch\bav\FileDataBackend");
+        $backend = $this->getMock("malkusch\bav\DataBackend\File\FileDataBackend");
         $bank = $this->getMock(
-                "malkusch\bav\Bank", array(), array($backend, 1, 66));
+                "malkusch\bav\Bank\Bank", array(), array($backend, 1, 66));
         
         $validator = new Validator66($bank);
         $this->assertEquals($expected, $validator->isValid($account));

@@ -2,6 +2,9 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\DataBackend\File\FileDataBackend;
+use malkusch\bav\DataBackend\File\Validator\FileValidator;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -24,7 +27,7 @@ class FileValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException malkusch\bav\InvalidFilesizeException
+     * @expectedException malkusch\bav\DataBackend\File\Validator\Exception\InvalidFilesizeException
      */
     public function testInvalidFileSize()
     {
@@ -33,7 +36,7 @@ class FileValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException malkusch\bav\InvalidLineLengthException
+     * @expectedException malkusch\bav\DataBackend\File\Validator\Exception\InvalidLineLengthException
      */
     public function testInvalidLineLength()
     {
@@ -51,7 +54,7 @@ class FileValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException malkusch\bav\InvalidLineLengthException
+     * @expectedException malkusch\bav\DataBackend\File\Validator\Exception\InvalidLineLengthException
      */
     public function testNotConstantLineLength()
     {
@@ -69,7 +72,7 @@ class FileValidatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException malkusch\bav\FieldException
+     * @expectedException malkusch\bav\DataBackend\File\Validator\Exception\FieldException
      */
     public function testInvalidFirstLineContent()
     {

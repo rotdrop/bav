@@ -10,6 +10,10 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Configuration\ConfigurationRegistry;
+use malkusch\bav\DataBackend\DataBackend;
+use malkusch\bav\DataBackend\Exception\DataBackendException;
+
 require_once $_composer_autoload_path
     ?? (is_file(__DIR__ . "/../vendor/autoload.php")
         ? __DIR__ . "/../vendor/autoload.php"

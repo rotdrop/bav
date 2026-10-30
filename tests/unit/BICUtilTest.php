@@ -2,6 +2,8 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Util\BICUtil;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**

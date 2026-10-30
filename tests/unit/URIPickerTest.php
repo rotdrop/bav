@@ -2,6 +2,12 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\DataBackend\File\Download\Uripicker\DOMURIPicker;
+use malkusch\bav\DataBackend\File\Download\Uripicker\FallbackURIPicker;
+use malkusch\bav\DataBackend\File\Download\Uripicker\RegExpURIPicker;
+use malkusch\bav\DataBackend\File\Download\Uripicker\URIPicker;
+use malkusch\bav\DataBackend\File\FileDataBackend;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -71,7 +77,7 @@ class URIPickerTest extends \PHPUnit_Framework_TestCase
      * Tests pickURI()
      *
      * @dataProvider provideURIPicker
-     * @expectedException malkusch\bav\URIPickerException
+     * @expectedException malkusch\bav\DataBackend\File\Download\Uripicker\Exception\URIPickerException
      */
     public function testFailPickURI(URIPicker $picker)
     {

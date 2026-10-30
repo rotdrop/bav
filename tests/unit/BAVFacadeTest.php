@@ -2,6 +2,8 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Bank\Agency;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -29,7 +31,7 @@ class BAVFacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests BAV::getBank();
      *
-     * @expectedException malkusch\bav\BankNotFoundException
+     * @expectedException malkusch\bav\DataBackend\Exception\BankNotFoundException
      * @see BAV::getBank();
      */
     public function testFailGetBank()
@@ -41,7 +43,7 @@ class BAVFacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests BAV::getAgencies();
      *
-     * @expectedException malkusch\bav\BankNotFoundException
+     * @expectedException malkusch\bav\DataBackend\Exception\BankNotFoundException
      * @see BAV::getAgencies();
      */
     public function testFailGetAgencies()
@@ -93,7 +95,7 @@ class BAVFacadeTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests BAV::getMainAgency();
      *
-     * @expectedException malkusch\bav\BankNotFoundException
+     * @expectedException malkusch\bav\DataBackend\Exception\BankNotFoundException
      * @see BAV::getMainAgency();
      */
     public function testFailGetMainAgency()

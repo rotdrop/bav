@@ -2,6 +2,8 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Validator\Validators\Validator74;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -27,9 +29,9 @@ class Validator74_PR18_Test extends \PHPUnit_Framework_TestCase
      */
     public function testAllHalfDecades($account, $expected)
     {
-        $backend = $this->getMock("malkusch\bav\FileDataBackend");
+        $backend = $this->getMock("malkusch\bav\DataBackend\File\FileDataBackend");
         $bank = $this->getMock(
-                "malkusch\bav\Bank", array(), array($backend, 1, 74));
+                "malkusch\bav\Bank\Bank", array(), array($backend, 1, 74));
         
         $validator = new Validator74($bank);
         $this->assertEquals($expected, $validator->isValid($account));

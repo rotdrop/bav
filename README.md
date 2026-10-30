@@ -21,8 +21,26 @@ Include Composer's autoloader before using BAV:
 require_once __DIR__ . '/vendor/autoload.php';
 ```
 
-Classes retain the `malkusch\bav` namespace and are loaded via PSR-4 from
-`src/`. The generated `autoloader/autoloader.php` is no longer used; replace
+Classes use the `malkusch\bav` namespace prefix and are loaded via PSR-4 from
+`src/`. Sub-namespaces mirror the original directory hierarchy, with an
+uppercase first letter for each directory and namespace segment. For example,
+`classes/dataBackend/file/FileDataBackend.php` is now
+`src/DataBackend/File/FileDataBackend.php`, declaring
+`malkusch\bav\DataBackend\File\FileDataBackend`.
+
+The facade remains `malkusch\bav\BAV`. Other classes have new fully qualified
+names; update imports and class-name strings when upgrading. Common examples:
+
+| Class | New fully qualified name |
+|---|---|
+| `Bank` | `malkusch\bav\Bank\Bank` |
+| `DefaultConfiguration` | `malkusch\bav\Configuration\DefaultConfiguration` |
+| `PDODataBackendContainer` | `malkusch\bav\DataBackend\Pdo\PDODataBackendContainer` |
+| `AutomaticUpdatePlan` | `malkusch\bav\DataBackend\Update\AutomaticUpdatePlan` |
+| `Validator00` | `malkusch\bav\Validator\Validators\Validator00` |
+
+No aliases for the old flat class names are registered.
+The generated `autoloader/autoloader.php` is no longer used; replace
 any direct includes of it with Composer's autoloader. Run `composer install`
 after checking out the repository, or `composer dump-autoload` after changing
 autoload mappings in an existing installation.
@@ -52,6 +70,10 @@ or preferably creating the file `bav/configuration.php` which returns a
 
 ```php
 namespace malkusch\bav;
+
+use malkusch\bav\Configuration\DefaultConfiguration;
+use malkusch\bav\DataBackend\Pdo\PDODataBackendContainer;
+use malkusch\bav\DataBackend\Update\AutomaticUpdatePlan;
 
 $configuration = new DefaultConfiguration();
 
@@ -90,6 +112,9 @@ in your `bav/configuration.php`:
 
 ```php
 namespace malkusch\bav;
+
+use malkusch\bav\Configuration\DefaultConfiguration;
+use malkusch\bav\DataBackend\Update\AutomaticUpdatePlan;
 
 $configuration = new DefaultConfiguration();
 $configuration->setUpdatePlan(new AutomaticUpdatePlan());

@@ -1,0 +1,31 @@
+<?php
+
+namespace malkusch\bav\DataBackend;
+
+use malkusch\bav\Bank\Agency;
+use malkusch\bav\DataBackend\Exception\DataBackendException;
+use malkusch\bav\DataBackend\Exception\DataBackendIOException;
+use malkusch\bav\DataBackend\Exception\MissingAttributesDataBackendIOException;
+
+/**
+ * Additional methods for SQL based data backends
+ *
+ * @author Markus Malkusch <markus@malkusch.de>
+ * @link bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK Donations
+ * @license WTFPL
+ */
+abstract class SQLDataBackend extends DataBackend
+{
+    
+    /**
+     * You may use an arbitrary SQL statement to receive Agency objects.
+     * Your statement should at least return the id of the agencies.
+     *
+     * @param string $sql
+     * @throws MissingAttributesDataBackendIOException
+     * @throws DataBackendIOException
+     * @throws DataBackendException
+     * @return Agency[]
+     */
+    abstract public function getAgencies($sql);
+}

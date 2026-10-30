@@ -2,6 +2,10 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\DataBackend\Orm\Doctrine\DoctrineBackendContainer;
+use malkusch\bav\DataBackend\Pdo\PDODataBackend;
+use malkusch\bav\DataBackend\SQLDataBackend;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -64,7 +68,7 @@ class AgencyQueryTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider provideBackends
-     * @expectedException malkusch\bav\MissingAttributesDataBackendIOException
+     * @expectedException malkusch\bav\DataBackend\Exception\MissingAttributesDataBackendIOException
      */
     public function testNoID(SQLDataBackend $backend)
     {

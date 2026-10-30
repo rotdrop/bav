@@ -2,6 +2,8 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Configuration\ConfigurationRegistry;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -34,7 +36,7 @@ class ConfigurationRegistryTest extends \PHPUnit_Framework_TestCase
         ConfigurationRegistry::classConstructor();
         $configuration = ConfigurationRegistry::getConfiguration();
         
-        $this->assertInstanceOf("malkusch\bav\Configuration", $configuration);
+        $this->assertInstanceOf("malkusch\bav\Configuration\Configuration", $configuration);
         $this->assertEquals("test", $configuration->getTempDirectory());
         
         restore_include_path();
@@ -50,7 +52,7 @@ class ConfigurationRegistryTest extends \PHPUnit_Framework_TestCase
         ConfigurationRegistry::classConstructor();
         $configuration = ConfigurationRegistry::getConfiguration();
         
-        $this->assertInstanceOf("malkusch\bav\DefaultConfiguration", $configuration);
+        $this->assertInstanceOf("malkusch\bav\Configuration\DefaultConfiguration", $configuration);
         $this->assertNotEquals("test", $configuration->getTempDirectory());
     }
 }

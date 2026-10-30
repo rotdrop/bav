@@ -2,6 +2,8 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Configuration\ConfigurationLocator;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -29,7 +31,7 @@ class ConfigurationLocatorTest extends \PHPUnit_Framework_TestCase
      * locate() should throw an exception
      * 
      * @see ConfigurationLocator::locate();
-     * @expectedException malkusch\bav\ConfigurationException
+     * @expectedException malkusch\bav\Configuration\ConfigurationException
      */
     public function testlocateThrowsException()
     {
@@ -51,7 +53,7 @@ class ConfigurationLocatorTest extends \PHPUnit_Framework_TestCase
         $locator = new ConfigurationLocator($paths);
         $configuration = $locator->locate();
         
-        $this->assertInstanceOf("malkusch\bav\Configuration", $configuration);
+        $this->assertInstanceOf("malkusch\bav\Configuration\Configuration", $configuration);
         $this->assertEquals("test", $configuration->getTempDirectory());
     }
     
@@ -87,7 +89,7 @@ class ConfigurationLocatorTest extends \PHPUnit_Framework_TestCase
         $locator = new ConfigurationLocator($paths);
         $configuration = $locator->locate();
         
-        $this->assertInstanceOf("malkusch\bav\Configuration", $configuration);
+        $this->assertInstanceOf("malkusch\bav\Configuration\Configuration", $configuration);
         $this->assertEquals("test", $configuration->getTempDirectory());
         
         restore_include_path();

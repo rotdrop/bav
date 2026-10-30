@@ -2,6 +2,16 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Bank\Agency;
+use malkusch\bav\Bank\Bank;
+use malkusch\bav\DataBackend\DataBackend;
+use malkusch\bav\DataBackend\File\FileDataBackend;
+use malkusch\bav\DataBackend\File\FileParser\FileParser;
+use malkusch\bav\DataBackend\Orm\Doctrine\DoctrineBackendContainer;
+use malkusch\bav\DataBackend\Orm\Doctrine\DoctrineDataBackend;
+use malkusch\bav\DataBackend\Pdo\PDODataBackend;
+use malkusch\bav\Util\FileUtil;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**

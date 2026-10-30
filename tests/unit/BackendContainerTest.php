@@ -2,6 +2,11 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Configuration\ConfigurationRegistry;
+use malkusch\bav\DataBackend\File\FileDataBackendContainer;
+use malkusch\bav\DataBackend\Update\AutomaticUpdatePlan;
+use malkusch\bav\Util\FileUtil;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**

@@ -2,6 +2,9 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Bank\Bank;
+use malkusch\bav\DataBackend\Pdo\PDODataBackend;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**

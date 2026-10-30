@@ -2,6 +2,8 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\DataBackend\File\Download\Downloader;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -83,7 +85,7 @@ class DownloaderTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests failing downloadContent();
      * 
-     * @expectedException malkusch\bav\DownloaderException
+     * @expectedException malkusch\bav\DataBackend\File\Download\Exception\DownloaderException
      * @see Downloader::downloadContent()
      */
     public function testFailDownloadContent()
@@ -95,7 +97,7 @@ class DownloaderTest extends \PHPUnit_Framework_TestCase
     /**
      * Tests failing downloadFile();
      * 
-     * @expectedException malkusch\bav\DownloaderException
+     * @expectedException malkusch\bav\DataBackend\File\Download\Exception\DownloaderException
      * @see Downloader::downloadFile()
      */
     public function testFailDownloadFile()

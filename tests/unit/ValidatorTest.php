@@ -2,6 +2,13 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Bank\Bank;
+use malkusch\bav\DataBackend\DataBackend;
+use malkusch\bav\DataBackend\File\FileDataBackendContainer;
+use malkusch\bav\DataBackend\File\FileParser\Exception\FileParserIOException;
+use malkusch\bav\DataBackend\File\FileParser\Exception\FileParserNotExistsException;
+use malkusch\bav\Validator\Validator;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 /**
@@ -58,7 +65,7 @@ class ValidatorTest extends \PHPUnit_Framework_TestCase
         $this->setUp();
 
         $banks = array();
-        $files = ClassFile::getClassFiles(__DIR__.'/../../src/');
+        $files = ClassFile::getClassFiles(__DIR__.'/../../src/Validator/Validators/');
         foreach ($files as $class) {
             if (! preg_match('~^Validator([A-Z0-9]{2})$~', $class->getName(), $matchType)) {
                 continue;

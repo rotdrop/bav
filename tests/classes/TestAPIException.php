@@ -2,6 +2,8 @@
 
 namespace malkusch\bav;
 
+use malkusch\bav\Exception\BAVException;
+
 /**
  * Copyright (C) 2009  Markus Malkusch <markus@malkusch.de>
  *
