@@ -5,7 +5,10 @@ namespace rotdrop\bav;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use Doctrine\ORM\Tools\SchemaValidator;
+use rotdrop\bav\Bank\Agency;
+use rotdrop\bav\Bank\Bank;
 use rotdrop\bav\DataBackend\Exception\BankNotFoundException;
 use rotdrop\bav\DataBackend\Exception\DataBackendException;
 use rotdrop\bav\DataBackend\Exception\DataBackendIOException;
@@ -81,11 +84,47 @@ class DoctrineDataBackendTest extends TestCase
 
     public function testMappingsAndSchema(): void
     {
+        $driver = $this->em->getConfiguration()->getMetadataDriverImpl();
+        $this->assertInstanceOf(AttributeDriver::class, $driver);
+        $entities = $driver->getAllClassNames();
+        sort($entities);
+        $expectedEntities = array(Bank::class, Agency::class, MetaData::class);
+        sort($expectedEntities);
+        $this->assertSame($expectedEntities, $entities);
+
         $validator = new SchemaValidator($this->em);
         $this->assertSame(array(), $validator->validateMapping());
         $this->assertTrue($this->connection->createSchemaManager()->tablesExist(array(
             'bav_bank', 'bav_agency', 'bav_meta',
         )));
+
+        $bank = $this->em->getClassMetadata(Bank::class);
+        $this->assertSame(array('bankID'), $bank->getIdentifierFieldNames());
+        $this->assertSame('id', $bank->getColumnName('bankID'));
+        $this->assertSame('integer', $bank->getTypeOfField('bankID'));
+        $this->assertSame('validator', $bank->getColumnName('validationType'));
+        $this->assertSame(2, $bank->getFieldMapping('validationType')->length);
+        $this->assertSame(Agency::class, $bank->getAssociationTargetClass('mainAgency'));
+
+        $agency = $this->em->getClassMetadata(Agency::class);
+        $this->assertSame(Bank::class, $agency->getAssociationTargetClass('bank'));
+        foreach (array('name' => 58, 'postcode' => 5, 'city' => 35, 'shortTerm' => 27, 'pan' => 5, 'bic' => 11) as $field => $length) {
+            $mapping = $agency->getFieldMapping($field);
+            $this->assertSame('string', $mapping->type);
+            $this->assertSame($length, $mapping->length);
+            $this->assertSame(in_array($field, array('pan', 'bic'), true), $mapping->nullable);
+        }
+        $this->assertSame(array('bic'), $agency->table['indexes'][0]['columns']);
+        foreach (array($bank->getAssociationMapping('mainAgency'), $agency->getAssociationMapping('bank')) as $association) {
+            $this->assertSame('id', $association->joinColumns[0]->referencedColumnName);
+            $this->assertSame('CASCADE', $association->joinColumns[0]->onDelete);
+            $this->assertTrue($association->joinColumns[0]->nullable);
+        }
+
+        $metadata = $this->em->getClassMetadata(MetaData::class);
+        $this->assertSame(array('name'), $metadata->getIdentifierFieldNames());
+        $this->assertSame('string', $metadata->getTypeOfField('name'));
+        $this->assertSame(128, $metadata->getFieldMapping('value')->length);
     }
 
     public static function provideModes(): array
