@@ -64,18 +64,19 @@ $check(
         === realpath(__DIR__ . "/../.."),
     "Configuration path does not point to the repository root."
 );
-foreach (DoctrineBackendContainer::getXMLMappings() as $mappingDirectory) {
-    $check(count(glob($mappingDirectory . "*.xml")) === 3, "Doctrine mappings were not found.");
+foreach (DoctrineBackendContainer::getEntityPaths() as $entityDirectory) {
+    $check(is_dir($entityDirectory), "Doctrine entity directory was not found.");
 }
-if (class_exists(\Doctrine\ORM\Mapping\Driver\XmlDriver::class)) {
-    $driver = new \Doctrine\ORM\Mapping\Driver\XmlDriver(DoctrineBackendContainer::getXMLMappings());
+if (class_exists(\Doctrine\ORM\Mapping\Driver\AttributeDriver::class)) {
+    $driver = new \Doctrine\ORM\Mapping\Driver\AttributeDriver(DoctrineBackendContainer::getEntityPaths());
     $entities = $driver->getAllClassNames();
     $expectedEntities = array(Bank::class, Agency::class, MetaData::class);
     sort($entities);
     sort($expectedEntities);
-    $check($entities === $expectedEntities, "Doctrine did not discover the renamed entities.");
+    $check($entities === $expectedEntities, "Doctrine did not discover the attribute-mapped entities.");
     foreach ($entities as $class) {
         $metadata = new \Doctrine\ORM\Mapping\ClassMetadata($class);
+        $metadata->initializeReflection(new \Doctrine\Persistence\Mapping\RuntimeReflectionService());
         $driver->loadMetadataForClass($class, $metadata);
         foreach ($metadata->associationMappings as $association) {
             $check(class_exists($association["targetEntity"]), "Doctrine association target was not found.");

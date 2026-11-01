@@ -2,6 +2,7 @@
 
 namespace rotdrop\bav\Bank;
 
+use Doctrine\ORM\Mapping as ORM;
 use rotdrop\bav\DataBackend\DataBackend;
 use rotdrop\bav\DataBackend\Exception\DataBackendException;
 use rotdrop\bav\Validator\Validator;
@@ -40,17 +41,22 @@ use rotdrop\bav\Validator\ValidatorFactory;
  * @link bitcoin:1335STSwu9hST4vcMRppEPgENMHD2r1REK Donations
  * @copyright Copyright (C) 2006 Markus Malkusch
  */
+#[ORM\Entity]
+#[ORM\Table(name: 'bav_bank')]
 class Bank
 {
 
     /**
      * @var string
      */
+    #[ORM\Id]
+    #[ORM\Column(name: 'id', type: 'integer')]
     private $bankID = '';
 
     /**
      * @var string
      */
+    #[ORM\Column(name: 'validator', type: 'string', length: 2)]
     private $validationType = '';
 
     /**
@@ -66,6 +72,8 @@ class Bank
     /**
      * @var Agency
      */
+    #[ORM\OneToOne(targetEntity: Agency::class)]
+    #[ORM\JoinColumn(name: 'mainAgency', referencedColumnName: 'id', onDelete: 'CASCADE')]
     private $mainAgency;
 
     /**

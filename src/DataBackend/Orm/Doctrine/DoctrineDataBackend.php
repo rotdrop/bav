@@ -60,7 +60,7 @@ class DoctrineDataBackend extends SQLDataBackend
     public function getAgenciesForBank(Bank $bank)
     {
         $query = $this->em->createQuery(
-            "select agency from rotdrop\bav\Bank\Agency agency where agency.id != :mainAgency and agency.bank=:bank"
+            "select agency from " . Agency::class . " agency where agency.id != :mainAgency and agency.bank=:bank"
         );
         $query->setParameters(array(
             "mainAgency" => $bank->getMainAgency()->getID(),
@@ -150,8 +150,8 @@ class DoctrineDataBackend extends SQLDataBackend
             $fileBackend->install();
             $this->free();
             $this->em->wrapInTransaction(function (EntityManagerInterface $em) use ($fileBackend) {
-                $em->createQuery("DELETE FROM rotdrop\bav\Bank\Agency")->execute();
-                $em->createQuery("DELETE FROM rotdrop\bav\Bank\Bank")->execute();
+                $em->createQuery("DELETE FROM " . Agency::class)->execute();
+                $em->createQuery("DELETE FROM " . Bank::class)->execute();
 
                 foreach ($fileBackend->getAllBanks() as $bank) {
                     try {

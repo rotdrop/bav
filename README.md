@@ -254,7 +254,11 @@ return $configuration;
 `buildByConnection()` accepts DBAL connection parameters or an existing
 `Doctrine\DBAL\Connection`, not the former `['pdo' => $pdo]` option. You can
 also inject an `EntityManagerInterface` into `DoctrineBackendContainer` directly;
-configure it with the XML mapping paths from `getXMLMappings()`.
+configure it with `ORMSetup::createAttributeMetadataConfig()` using the entity
+paths from `DoctrineBackendContainer::getEntityPaths()`. The former
+`getXMLMappings()` method and XML mapping files have been removed. Entity and
+association mappings now use PHP attributes and class constants, so namespace
+prefixing does not require renaming mapping files.
 Existing BAV table and column names are unchanged. PHP 8.4+ uses native lazy
 objects; PHP 8.3 generates proxy classes in the system temporary directory.
 An update replaces all bank data and clears the entity manager's identity map;

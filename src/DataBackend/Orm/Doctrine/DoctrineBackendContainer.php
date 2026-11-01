@@ -29,13 +29,13 @@ class DoctrineBackendContainer extends DataBackendContainer
     private EntityManagerInterface $em;
     
     /**
-     * Return the paths to the XML-Mappings
+     * Return the paths to the attribute-mapped entities.
      *
      * @return string[]
      */
-    public static function getXMLMappings(): array
+    public static function getEntityPaths(): array
     {
-        return array(__DIR__ . "/Mapping/");
+        return array(dirname(__DIR__, 3) . "/Bank", dirname(__DIR__));
     }
     
     /**
@@ -46,8 +46,7 @@ class DoctrineBackendContainer extends DataBackendContainer
      */
     public static function buildByConnection(Connection|array $connection, bool $isDevMode = false): self
     {
-        $mappings = self::getXMLMappings();
-        $config = ORMSetup::createXMLMetadataConfig($mappings, $isDevMode);
+        $config = ORMSetup::createAttributeMetadataConfig(self::getEntityPaths(), $isDevMode);
         if (PHP_VERSION_ID >= 80400) {
             $config->enableNativeLazyObjects(true);
         } else {
