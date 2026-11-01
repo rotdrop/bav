@@ -8,15 +8,23 @@ BAV (bank account validator) is a validation library for German bank accounts.
 Requires PHP 8.3 or later.
 
 Use [Composer](https://getcomposer.org/) to install the current development
-version:
+version. Neither `rotdrop/bav` nor its dependency `rotdrop/php-index` is
+currently published on Packagist. Run these commands in your application's
+root directory (for example, the cafevdb directory containing `composer.json`):
 
 ```sh
-composer require rotdrop/bav:dev-master@dev
+composer config repositories.bav vcs https://github.com/rotdrop/bav
+composer config repositories.php-index vcs https://github.com/rotdrop/php-index
+composer require rotdrop/bav:dev-master@dev rotdrop/php-index:dev-master@dev
 ```
 
-The `@dev` stability flag applies only to BAV and does not lower your project's
-global minimum stability. Use a stable version constraint when a release with
-the `rotdrop\bav` namespace is available.
+Composer only reads repository definitions from the root project's
+`composer.json`; BAV's own repository definition does not make `php-index`
+discoverable when BAV is installed as a dependency. Both packages must also
+be explicitly allowed at development stability in the root project.
+The `@dev` stability flags apply only to these two packages and do not lower
+your project's global minimum stability. Use stable version constraints when
+compatible releases are available.
 
 Include Composer's autoloader before using BAV:
 
