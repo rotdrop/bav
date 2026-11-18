@@ -264,6 +264,15 @@ objects; PHP 8.3 generates proxy classes in the system temporary directory.
 An update replaces all bank data and clears the entity manager's identity map;
 use a dedicated entity manager and obtain fresh bank objects after updating.
 
+If a Doctrine refresh fails with `Column 'bank' cannot be null`, check the
+`rotdrop/bav` revision actually loaded by the application and inspect the
+deployed table definitions (for MySQL/MariaDB, use `SHOW CREATE TABLE` on
+`bav_agency` and `bav_bank`, with the configured prefix if any) before cleaning
+up any data. `bav_agency.bank` is required. `bav_bank.mainAgency` must allow
+`NULL` during insertion so Doctrine can insert the bank first and set its main
+agency after inserting the agency. Do not make `bav_agency.bank` nullable to
+work around an insert failure.
+
 
 # Development and tests
 

@@ -159,6 +159,15 @@ class DoctrineDataBackend extends SQLDataBackend
                         $agencies[] = $bank->getMainAgency();
                         $em->persist($bank);
                         foreach ($agencies as $agency) {
+                            $agencyBank = $agency->getBank();
+                            if ($agencyBank !== $bank) {
+                                $reason = $agencyBank === null
+                                    ? 'missing bank association'
+                                    : "association points to a different bank object ({$agencyBank->getBankID()})";
+                                throw new DataBackendException(
+                                    "Cannot import agency {$agency->getID()} for bank {$bank->getBankID()}: $reason."
+                                );
+                            }
                             $em->persist($agency);
                         }
                     } catch (NoMainAgencyException $e) {
