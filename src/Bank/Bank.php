@@ -73,7 +73,8 @@ class Bank
      * @var Agency
      */
     #[ORM\OneToOne(targetEntity: Agency::class)]
-    #[ORM\JoinColumn(name: 'mainAgency', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    // Doctrine inserts the bank before its agencies, then fills in this foreign key.
+    #[ORM\JoinColumn(name: 'mainAgency', referencedColumnName: 'id', nullable: true, onDelete: 'CASCADE')]
     private $mainAgency;
 
     /**
