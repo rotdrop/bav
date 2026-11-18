@@ -37,7 +37,7 @@ class Agency
      * @var Bank
      */
     #[ORM\ManyToOne(targetEntity: Bank::class)]
-    #[ORM\JoinColumn(name: 'bank', referencedColumnName: 'id', onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'bank', referencedColumnName: 'id', nullable: false, onDelete: 'CASCADE')]
     private $bank;
 
     /**

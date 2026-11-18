@@ -28,6 +28,7 @@ class DoctrineDataBackendTest extends TestCase
     private array $temporaryFiles = array();
     private bool $failImport = false;
     private bool $failDownload = false;
+    private bool $missingAgencyBank = false;
 
     protected function setUp(): void
     {
@@ -51,7 +52,8 @@ class DoctrineDataBackendTest extends TestCase
             if (! copy(__DIR__ . '/../data/fileParserTest/bb-excerpt.txt', $file)) {
                 throw new \RuntimeException('Could not copy the bank fixture.');
             }
-            $methods = $this->failImport ? array('install', 'getAllBanks') : array('install');
+            $methods = $this->failImport || $this->missingAgencyBank
+                ? array('install', 'getAllBanks') : array('install');
             $source = $this->getMockBuilder(FileDataBackend::class)
                 ->setConstructorArgs(array($file))
                 ->onlyMethods($methods)
@@ -64,6 +66,17 @@ class DoctrineDataBackendTest extends TestCase
             }
             if ($this->failImport) {
                 $source->method('getAllBanks')->willThrowException(new \RuntimeException('Import failed.'));
+            } elseif ($this->missingAgencyBank) {
+                $source->method('getAllBanks')->willReturnCallback(function () use ($file) {
+                    $banks = (new FileDataBackend($file))->getAllBanks();
+                    foreach ($banks as $bank) {
+                        if ($bank->getBankID() === '10020890') {
+                            (new \ReflectionProperty(Agency::class, 'bank'))->setValue($bank->getMainAgency(), null);
+                            break;
+                        }
+                    }
+                    return $banks;
+                });
             }
             return $source;
         });
@@ -115,11 +128,14 @@ class DoctrineDataBackendTest extends TestCase
             $this->assertSame(in_array($field, array('pan', 'bic'), true), $mapping->nullable);
         }
         $this->assertSame(array('bic'), $agency->table['indexes'][0]['columns']);
-        foreach (array($bank->getAssociationMapping('mainAgency'), $agency->getAssociationMapping('bank')) as $association) {
+        $mainAgency = $bank->getAssociationMapping('mainAgency');
+        $agencyBank = $agency->getAssociationMapping('bank');
+        foreach (array($mainAgency, $agencyBank) as $association) {
             $this->assertSame('id', $association->joinColumns[0]->referencedColumnName);
             $this->assertSame('CASCADE', $association->joinColumns[0]->onDelete);
-            $this->assertTrue($association->joinColumns[0]->nullable);
         }
+        $this->assertTrue($mainAgency->joinColumns[0]->nullable);
+        $this->assertFalse($agencyBank->joinColumns[0]->nullable);
 
         $metadata = $this->em->getClassMetadata(MetaData::class);
         $this->assertSame(array('name'), $metadata->getIdentifierFieldNames());
@@ -183,6 +199,39 @@ class DoctrineDataBackendTest extends TestCase
         foreach ($agencies as $agency) {
             $this->assertSame($bank, $agency->getBank());
             $this->assertFalse($agency->isMainAgency());
+        }
+    }
+
+    public function testRefreshDoesNotInsertAgenciesWithNullBank(): void
+    {
+        // Enforce the constraint even if the ORM mapping would generate a nullable column.
+        $this->connection->executeStatement(
+            "CREATE TRIGGER require_agency_bank BEFORE INSERT ON bav_agency
+             WHEN NEW.bank IS NULL BEGIN SELECT RAISE(ABORT, 'bank cannot be null'); END"
+        );
+        $this->backend->update();
+
+        $bank = $this->backend->getBank('10020890');
+        $this->assertSame(39785, $bank->getMainAgency()->getID());
+        $this->assertSame($bank, $bank->getMainAgency()->getBank());
+        $this->assertSame(10, (int) $this->connection->fetchOne('SELECT COUNT(*) FROM bav_agency'));
+    }
+
+    public function testRefreshRejectsAgencyWithoutBankBeforeFlush(): void
+    {
+        $this->missingAgencyBank = true;
+        try {
+            $this->backend->update();
+            $this->fail('The refresh must reject an agency without a bank.');
+        } catch (DataBackendException $e) {
+            $this->assertSame(
+                'Cannot import agency 39785 for bank 10020890: missing bank association.',
+                $e->getMessage()
+            );
+            $this->assertFalse($this->connection->isTransactionActive());
+            $this->assertSame(8, (int) $this->connection->fetchOne('SELECT COUNT(*) FROM bav_bank'));
+            $this->assertSame(10, (int) $this->connection->fetchOne('SELECT COUNT(*) FROM bav_agency'));
+            $this->assertFileDoesNotExist(end($this->temporaryFiles));
         }
     }
 
