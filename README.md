@@ -264,14 +264,25 @@ objects; PHP 8.3 generates proxy classes in the system temporary directory.
 An update replaces all bank data and clears the entity manager's identity map;
 use a dedicated entity manager and obtain fresh bank objects after updating.
 
-If a Doctrine refresh fails with `Column 'bank' cannot be null`, check the
-`rotdrop/bav` revision actually loaded by the application and inspect the
-deployed table definitions (for MySQL/MariaDB, use `SHOW CREATE TABLE` on
-`bav_agency` and `bav_bank`, with the configured prefix if any) before cleaning
-up any data. `bav_agency.bank` is required. `bav_bank.mainAgency` must allow
-`NULL` during insertion so Doctrine can insert the bank first and set its main
-agency after inserting the agency. Do not make `bav_agency.bank` nullable to
-work around an insert failure.
+Doctrine requires `bav_agency.bank` to be `NOT NULL`, while
+`bav_bank.mainAgency` must allow `NULL`. During a refresh, Doctrine inserts the
+bank first, inserts its agencies with their bank references, then sets the
+bank's main agency before committing the transaction.
+
+If a refresh fails with a nullability error, check the `rotdrop/bav` revision
+actually loaded by the application and inspect the deployed table definitions
+(for MySQL/MariaDB, use `SHOW CREATE TABLE` on `bav_agency` and `bav_bank`,
+with the configured prefix if any). If `bav_bank.mainAgency` is `NOT NULL`,
+migrate that column to allow `NULL` while preserving its type and any existing
+indexes and foreign key, then retry the refresh. For example, on MySQL/MariaDB,
+if `SHOW CREATE TABLE` reports a plain signed `INT` for `mainAgency`, use
+`ALTER TABLE bav_bank MODIFY COLUMN mainAgency INT NULL`. Use the actual table
+name and column type from your schema.
+
+The PDO backend creates `mainAgency` as `NOT NULL`, so a database created by
+that backend may need this migration when switching to Doctrine. `update()`
+does not migrate an existing schema. Do not make `bav_agency.bank` nullable as
+a workaround.
 
 
 # Development and tests
